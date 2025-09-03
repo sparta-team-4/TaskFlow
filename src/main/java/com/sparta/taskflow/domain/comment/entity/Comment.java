@@ -1,6 +1,5 @@
 package com.sparta.taskflow.domain.comment.entity;
 
-import com.sparta.taskflow.common.entity.BaseEntity;
 import com.sparta.taskflow.domain.task.entity.Task;
 import jakarta.persistence.*;
 

@@ -1,6 +1,5 @@
 package com.sparta.taskflow.domain.task.entity;
 
-import com.sparta.taskflow.common.entity.BaseEntity;
 import com.sparta.taskflow.domain.task.enums.TaskPriority;
 import com.sparta.taskflow.domain.task.enums.TaskStatus;
 import com.sparta.taskflow.domain.user.entity.User;
