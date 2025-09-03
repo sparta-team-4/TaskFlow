@@ -1,6 +1,7 @@
 package com.sparta.taskflow.domain.team.entity;
 
-import com.sparta.taskflow.common.BaseEntity;
+import com.sparta.taskflow.common.entity.BaseEntity;
+import com.sparta.taskflow.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -16,10 +17,10 @@ public class TeamMember extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

@@ -1,6 +1,6 @@
 package com.sparta.taskflow.domain.user.entity;
 
-import com.sparta.taskflow.common.BaseEntity;
+import com.sparta.taskflow.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
