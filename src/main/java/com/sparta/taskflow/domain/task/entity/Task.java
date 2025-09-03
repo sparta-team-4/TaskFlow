@@ -5,7 +5,6 @@ import com.sparta.taskflow.domain.task.enums.TaskPriority;
 import com.sparta.taskflow.domain.task.enums.TaskStatus;
 import com.sparta.taskflow.domain.user.entity.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,11 +19,9 @@ public class Task extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(max = 85)
     @Column(nullable = false)
     private String title;
 
-    @Size(max = 200)
     @Column(length = 600)
     private String description;
 
@@ -36,7 +33,6 @@ public class Task extends BaseEntity {
     @Column(nullable = false)
     private TaskStatus status;
 
-    @Size(max = 15)
     @Column(length = 50)
     private String assignee;
 
