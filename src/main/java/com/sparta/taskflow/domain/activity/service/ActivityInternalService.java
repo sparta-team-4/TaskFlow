@@ -1,11 +1,8 @@
 package com.sparta.taskflow.domain.activity.service;
 
-import org.springframework.data.domain.Pageable;
-
-import java.time.LocalDateTime;
 import java.util.List;
 
-public interface ActivityLogInternalService {
+public interface ActivityInternalService {
 
     //ID로 단일 활동로그 조회
     Activity getByIdOrThrow(Long id);
