@@ -1,7 +1,5 @@
 package com.sparta.taskflow.domain.auth.service;
 
-import com.sparta.taskflow.domain.user.entity.User;
-
 public interface AuthInternalService {
 
     //회원가입
