@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface ActivityInternalService {
+public interface ActivityLogInternalService {
 
     //ID로 단일 활동로그 조회
     Activity getByIdOrThrow(Long id);
@@ -19,12 +19,4 @@ public interface ActivityInternalService {
     //특정 Task 활동로그 조회
     List<Activity> getActivitiesByTaskId(Long taskId);
 
-    //활동로그 조회 (필터링, 페이징)
-    Page<Activity> getActivities(
-            String type,
-            Long taskId,
-            LocalDateTime startDate,
-            LocalDateTime endDate,
-            Pageable pageable
-    );
 }
