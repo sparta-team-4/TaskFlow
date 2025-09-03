@@ -1,5 +1,6 @@
 package com.sparta.taskflow.domain.task.entity;
 
+import com.sparta.taskflow.common.entity.BaseEntity;
 import com.sparta.taskflow.domain.task.enums.TaskPriority;
 import com.sparta.taskflow.domain.task.enums.TaskStatus;
 import com.sparta.taskflow.domain.user.entity.User;
@@ -15,7 +16,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Task extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)

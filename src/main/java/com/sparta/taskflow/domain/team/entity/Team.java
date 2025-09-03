@@ -1,13 +1,9 @@
 package com.sparta.taskflow.domain.team.entity;
 
-import com.sparta.taskflow.common.BaseEntity;
-
+import com.sparta.taskflow.common.entity.BaseEntity;
 import jakarta.persistence.*;
-
 import lombok.AccessLevel;
-
 import lombok.Getter;
-
 import lombok.NoArgsConstructor;
 
 @Entity

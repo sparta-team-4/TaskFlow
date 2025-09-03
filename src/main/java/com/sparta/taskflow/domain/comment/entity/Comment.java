@@ -1,5 +1,6 @@
 package com.sparta.taskflow.domain.comment.entity;
 
+import com.sparta.taskflow.common.entity.BaseEntity;
 import com.sparta.taskflow.domain.task.entity.Task;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -14,7 +15,8 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 50)
