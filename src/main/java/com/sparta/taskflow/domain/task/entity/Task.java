@@ -6,6 +6,7 @@ import com.sparta.taskflow.domain.task.enums.TaskStatus;
 import com.sparta.taskflow.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,18 +35,43 @@ public class Task extends BaseEntity {
     @Column(nullable = false)
     private TaskStatus status;
 
-    @Column(length = 50)
-    private String assignee;
-
     @Column(nullable = false)
     private boolean isDeleted = false;
 
     @Column(nullable = false)
     private LocalDateTime dueDate;
 
-    private LocalDateTime endDate;
+    private LocalDateTime endDate; //nullable
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    @Builder
+    public Task(String title, String description, TaskPriority priority, LocalDateTime dueDate, User user, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.title = title;
+        this.description = description;
+        this.priority = priority;
+        this.dueDate = dueDate;
+        this.status = TaskStatus.TODO;
+        this.user = user;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public void update(String title, String description, TaskPriority priority, LocalDateTime dueDate, TaskStatus status, User user){
+        this.title = title;
+        this.description = description;
+        this.priority = priority;
+        this.dueDate = dueDate;
+        this.status = status;
+        this.user = user;
+    }
+
+    public void updateStatus(TaskStatus status) {
+        this.status = status;
+    }
 }

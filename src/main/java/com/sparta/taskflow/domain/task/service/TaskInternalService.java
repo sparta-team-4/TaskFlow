@@ -9,6 +9,4 @@ public interface TaskInternalService {
     Task getByIdOrThrow(Long id);
 
     List<Task> getAllById(Long id);
-
-    List<Task> getAllByIds(List<Long> ids);
 }
