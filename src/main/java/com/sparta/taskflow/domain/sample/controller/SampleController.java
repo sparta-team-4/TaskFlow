@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,5 +45,10 @@ public class SampleController {
     @GetMapping("/error")
     public ResponseEntity<ApiResponse<SampleResponse>> getError() {
         throw new SampleNotFoundException(SampleErrorCode.SAMPLE_NOT_FOUND);
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<ApiResponse<Long>> getUser(@AuthenticationPrincipal Long userId) {
+        return ApiResponse.success(userId, "토큰 안에 있는 id");
     }
 }

@@ -23,7 +23,7 @@ jwt:
     whiteList:
       - /api/auth/register
       - /api/auth/login
-      - /api/samples/**
+#      - /api/samples/**
   token:
     prefix: ${JWT_PREFIX}
     refreshPrefix: ${REFRESH_PREFIX}
