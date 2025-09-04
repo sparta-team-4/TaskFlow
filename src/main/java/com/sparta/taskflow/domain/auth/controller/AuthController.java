@@ -20,7 +20,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<UserRegisterResponse>> signUp(@Valid @RequestBody UserRegisterRequest request) {
+    public ResponseEntity<ApiResponse<UserRegisterResponse>> userRegister(@Valid @RequestBody UserRegisterRequest request) {
         return ApiResponse.created(
                 authService.signUp(request),
                 "회원가입이 완료되었습니다."
