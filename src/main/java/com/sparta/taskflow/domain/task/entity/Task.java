@@ -45,31 +45,25 @@ public class Task extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private User assignee;
 
     @Builder
-    public Task(String title, String description, TaskPriority priority, LocalDateTime dueDate, User user, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Task(String title, String description, TaskPriority priority, LocalDateTime dueDate, User assignee) {
         this.title = title;
         this.description = description;
         this.priority = priority;
         this.dueDate = dueDate;
         this.status = TaskStatus.TODO;
-        this.user = user;
-
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.assignee = assignee;
     }
 
-    public void update(String title, String description, TaskPriority priority, LocalDateTime dueDate, TaskStatus status, User user){
+    public void update(String title, String description, TaskPriority priority, LocalDateTime dueDate, TaskStatus status, User assignee){
         this.title = title;
         this.description = description;
         this.priority = priority;
         this.dueDate = dueDate;
         this.status = status;
-        this.user = user;
+        this.assignee = assignee;
     }
 
     public void updateStatus(TaskStatus status) {
@@ -79,14 +73,14 @@ public class Task extends BaseEntity {
     //Task 삭제 검증
     public void validateTaskNotDeleted() {
         if (isDeleted()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("이미 삭제된 Task입니다.");
         }
     }
 
-    // 댓글 작성자인지 검증
-    public void validateOwner(Long userId) {
-        if (!this.user.getId().equals(userId)) {
-            throw new IllegalArgumentException();
-        }
-    }
+//    // Task 작성자인지 검증
+//    public void validateOwner(Long userId) {
+//        if (!this.user.getId().equals(userId)) {
+//            throw new IllegalArgumentException("작성자만 이용할 수 있습니다.");
+//        }
+//    } jwt로 변경
 }

@@ -1,10 +1,13 @@
 package com.sparta.taskflow.domain.task.controller;
 
+import com.sparta.taskflow.common.response.ApiPageResponse;
+import com.sparta.taskflow.common.response.ApiResponse;
 import com.sparta.taskflow.domain.task.dto.*;
 import com.sparta.taskflow.domain.task.enums.TaskStatus;
 import com.sparta.taskflow.domain.task.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -16,45 +19,45 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TaskController {
     private final TaskService taskService;
-    //인증&인가 필요?
 
     //Task 목록 조회
     @GetMapping("/api/tasks")
-    public ResponseEntity<CategoryResponse> getByCategory(@RequestParam Long assigneeId,
-                                                            @RequestParam String keyword,
-                                                            @RequestParam TaskStatus status,
-                                                            @PageableDefault(page = 0, size = 10) Pageable pageable) {
-        CategoryResponse categoryResponse = taskService.getByCategory(status, keyword, assigneeId, pageable);
-        return ResponseEntity.ok(categoryResponse);
+    public ResponseEntity<ApiPageResponse<TaskResponse>> getByCategory(@RequestParam Long assigneeId,
+                                                                       @RequestParam String keyword,
+                                                                       @RequestParam TaskStatus status,
+                                                                       @PageableDefault(page = 0, size = 10) Pageable pageable) {
+        Page<TaskResponse> taskResponse = taskService.getByCategory(status, keyword, assigneeId, pageable);
+        return ApiPageResponse.success(taskResponse, "Task 목록을 조회했습니다.");
     }
     //Task 상세 조회
     @GetMapping("/api/tasks/{taskId}")
-    public ResponseEntity<TaskResponse> getByCategory(@PathVariable Long taskId){
-        return ResponseEntity.ok(taskService.getById(taskId));
+    public ResponseEntity<ApiResponse<TaskResponse>> getByCategory(@PathVariable Long taskId){
+        return ApiResponse.success(taskService.getById(taskId), "Task를 조회했습니다.");
     }
 
     //Task 생성
     @PostMapping("/api/tasks")
-    public ResponseEntity<TaskResponse> create(@RequestBody TaskRequest taskRequest){
-        return ResponseEntity.ok(taskService.create(taskRequest));
+    public ResponseEntity<ApiResponse<TaskResponse>> create(@RequestBody TaskRequest taskRequest){
+        return ApiResponse.created(taskService.create(taskRequest), "Task가 생성되었습니다.");
     }
 
     //Task 수정
     @PatchMapping("/api/tasks/{taskId}")
-    public ResponseEntity<TaskResponse> update(@PathVariable Long taskId, @RequestBody UpdateRequest updateRequest){
-        return ResponseEntity.ok(taskService.update(taskId, updateRequest));
+    public ResponseEntity<ApiResponse<TaskResponse>> update(@PathVariable Long taskId, @RequestBody UpdateRequest updateRequest){
+        return ApiResponse.success(taskService.update(taskId, updateRequest), "Task가 수정되었습니다.");
     }
 
     //Task 상태 수정
     @PatchMapping("/api/tasks/{taskId}/status")
-    public ResponseEntity<TaskResponse> updateStatus(@PathVariable Long taskId, @RequestBody StatusRequest statusRequest){
-        return ResponseEntity.ok(taskService.updateStatus(taskId, statusRequest));
+    public ResponseEntity<ApiResponse<TaskResponse>> updateStatus(@PathVariable Long taskId, @RequestBody StatusRequest statusRequest){
+        return ApiResponse.success(taskService.updateStatus(taskId, statusRequest), "작업 상태가 업데이트되었습니다.");
     }
 
     //Task 삭제
     @DeleteMapping("/api/tasks/{taskId}")
-    public void delete(@PathVariable Long taskId){
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long taskId){
         taskService.delete(taskId);
+        return ApiResponse.success(null, "Task가 삭제되었습니다.");
     }
 
 }
