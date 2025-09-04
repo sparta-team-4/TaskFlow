@@ -22,12 +22,16 @@ public class Team extends BaseEntity {
 
     private String description;
 
-    // 양방향 연관 관계 설정
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TeamMember> teamMembers = new ArrayList<>();
 
     @Builder
     public Team(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
+    public void update(String name, String description) {
         this.name = name;
         this.description = description;
     }
