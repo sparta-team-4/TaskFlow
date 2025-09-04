@@ -26,7 +26,7 @@ public class Task extends BaseEntity {
     @Column(nullable = false)
     private String title;
 
-    @Column(length = 600)
+    @Column(nullable = false, length = 600)
     private String description;
 
     @Enumerated(EnumType.STRING)
@@ -97,4 +97,15 @@ public class Task extends BaseEntity {
             throw new CustomException(TaskErrorCode.OWNER_MISMATCH);
         }
     }
+
+    //endDate 기록
+    public void recordEndDate(TaskStatus status) {
+        this.status = status;
+        if (status == TaskStatus.DONE) {
+            this.endDate = LocalDateTime.now();
+        } else {
+            this.endDate = null;
+        }
+    }
+
 }

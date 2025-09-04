@@ -58,12 +58,8 @@ public class TaskService {
         Task task = taskRepository.findTaskByIdOrThrow(taskId);
         task.validateTaskNotDeleted();
         User assignee = userInternalService.getByIdOrThrow(updateRequest.getAssigneeId());
+        task.recordEndDate(updateRequest.getStatus());
         task.validateOwner(loginUserId);
-        if (updateRequest.getStatus().equals(TaskStatus.DONE)) {
-            task.updateEndDate(LocalDateTime.now());
-        } else {
-            task.updateEndDate(null);
-        }
         task.update(updateRequest.getTitle(),
                 updateRequest.getDescription(),
                 updateRequest.getPriority(),
@@ -78,12 +74,8 @@ public class TaskService {
     public TaskResponse updateStatus(Long taskId, StatusRequest statusRequest, Long loginUserId) {
         Task task = taskRepository.findTaskByIdOrThrow(taskId);
         task.validateTaskNotDeleted();
+        task.recordEndDate(statusRequest.getStatus());
         task.validateOwner(loginUserId);
-        if (statusRequest.getStatus().equals(TaskStatus.DONE)) {
-            task.updateEndDate(LocalDateTime.now());
-        } else {
-            task.updateEndDate(null);
-        }
         task.updateStatus(statusRequest.getStatus());
         return TaskResponse.create(task);
     }

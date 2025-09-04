@@ -12,17 +12,11 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class UpdateRequest {
-    @NotBlank(message = "title은 비워둘 수 없습니다.")
     private String title;
-    @NotBlank(message = "description은 비워둘 수 없습니다.")
     private String description;
-    @NotNull(message = "dueDate는 필수입니다.")
     @FutureOrPresent(message = "dueDate는 현재 시각 이후여야 합니다.")
     private LocalDateTime dueDate;
-    @NotNull(message = "priority는 필수입니다.")
     private TaskPriority priority;
-    @NotNull(message = "status는 필수입니다.")
     private TaskStatus status;
-    @NotNull(message = "assigneeId는 필수입니다.")
     private Long assigneeId;
 }
