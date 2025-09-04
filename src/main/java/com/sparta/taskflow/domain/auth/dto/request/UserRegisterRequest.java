@@ -24,7 +24,7 @@ public record UserRegisterRequest(
         @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,}", message = "비밀번호는 8자 이상 영문, 숫자, 특수문자를 사용하세요.")
         String password) {
 
-    public User toEntity() {
-        return User.register(username, email, password, name);
+    public User toEntity(String encodedPassword) {
+        return User.register(username, email, encodedPassword, name);
     }
 }
