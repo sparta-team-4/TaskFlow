@@ -1,4 +1,4 @@
-package com.sparta.taskflow.domain.user.service;
+package com.sparta.taskflow.domain.user.service.internal;
 
 import com.sparta.taskflow.domain.user.entity.User;
 
