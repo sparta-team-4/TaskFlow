@@ -1,6 +1,7 @@
 package com.sparta.taskflow.domain.team.dto;
 
 import com.sparta.taskflow.domain.team.entity.Team;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +9,7 @@ public class TeamRequestDto {
 
     @Getter
     @NoArgsConstructor
+    @AllArgsConstructor
     public static class Create {
         private String name;
         private String description;
