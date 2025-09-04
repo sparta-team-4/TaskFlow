@@ -29,7 +29,5 @@ public class ActivityLog extends CreatedAtEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "task_id", nullable = false)
-    private Task task;
+    private Long taskId;
 }
