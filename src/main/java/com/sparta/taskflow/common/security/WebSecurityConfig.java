@@ -13,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -27,6 +28,7 @@ import java.util.List;
 public class WebSecurityConfig {
 
     private final JwtSecurityProperties jwtSecurityProperties;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     /**
      * HTTP에 대해서 ‘인증’과 ‘인가’를 담당하는 메서드이며 필터를 통해 인증 방식과 인증 절차에 대해서 등록하며 설정을 담당하는 메서드
@@ -53,7 +55,10 @@ public class WebSecurityConfig {
                         // 특정 url 패턴에 대해서는 인증처리(Authentication 객체 생성) 제외
                         .requestMatchers(jwtSecurityProperties.getSecret().getWhiteList().toArray(new String[0])).permitAll()
                         .anyRequest().authenticated()
-                );
+                )
+                // UsernamePasswordAuthenticationFilter 에서 폼 로그인 인증 처리, 폼 로그인은 MVP(서버 자체에서 화면단까지)에서 사용됨.
+                // 그러므로 jwtAuthenticationFilter 에서 인증 객체를 생성하면 이미 인증이 됐으므로 UsernamePasswordAuthenticationFilter는 무시된다.
+                .addFilterAt(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
