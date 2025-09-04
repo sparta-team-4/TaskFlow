@@ -5,7 +5,6 @@ import com.sparta.taskflow.domain.auth.dto.response.UserRegisterResponse;
 import com.sparta.taskflow.domain.user.exception.DuplicateUsernameException;
 import com.sparta.taskflow.domain.user.exception.UserErrorCode;
 import com.sparta.taskflow.domain.user.repository.UserRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public UserRegisterResponse signUp(UserRegisterRequest request) {
+    public UserRegisterResponse userRegister(UserRegisterRequest request) {
 
         if (userRepository.existsByUsername(request.username())) {
             throw new DuplicateUsernameException(UserErrorCode.DUPLICATE_USERNAME);

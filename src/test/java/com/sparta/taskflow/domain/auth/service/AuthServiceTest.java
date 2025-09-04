@@ -39,7 +39,7 @@ class AuthServiceTest {
 
     @Test
     @DisplayName("회원가입에 성공한다.")
-    void signUp_success() {
+    void userRegister_success() {
         // given
         UserRegisterRequest request = new UserRegisterRequest(
                 "test",
@@ -62,7 +62,7 @@ class AuthServiceTest {
         given(userRepository.save(any(User.class))).willReturn(user);
 
         // when
-        UserRegisterResponse response = authService.signUp(request);
+        UserRegisterResponse response = authService.userRegister(request);
 
         // then
         assertThat(response)
@@ -75,7 +75,7 @@ class AuthServiceTest {
 
     @Test
     @DisplayName("이미 존재하는 사용자명이 있으면 회원가입을 할 수 없다.")
-    void signUp_fail_whenDuplicateUsername() {
+    void userRegister_fail_whenDuplicateUsername() {
         // given
         UserRegisterRequest request = new UserRegisterRequest(
                 "test",
@@ -88,7 +88,7 @@ class AuthServiceTest {
         when(userRepository.existsByUsername(request.username())).thenReturn(true);
 
         // then
-        assertThatThrownBy(() -> authService.signUp(request))
+        assertThatThrownBy(() -> authService.userRegister(request))
                 .isInstanceOf(DuplicateUsernameException.class)
                 .hasMessage("이미 존재하는 사용자명입니다");
     }
