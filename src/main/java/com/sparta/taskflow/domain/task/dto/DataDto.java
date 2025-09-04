@@ -15,7 +15,7 @@ public class DataDto {
     private int size;
 
     @Builder
-    public DataDto(List<Task> data,
+    private DataDto(List<Task> data,
                    int totalElements,
                    int totalPages,
                    int size,

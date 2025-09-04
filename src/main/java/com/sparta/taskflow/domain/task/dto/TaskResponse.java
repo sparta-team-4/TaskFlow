@@ -13,7 +13,7 @@ public class TaskResponse {
     private LocalDateTime timestamp;
 
     @Builder
-    public TaskResponse(boolean success,
+    private TaskResponse(boolean success,
                         String message,
                         Task data,
                         LocalDateTime timestamp) {

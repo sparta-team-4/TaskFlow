@@ -11,7 +11,7 @@ public class CategoryResponse {
     private LocalDateTime timestamp;
 
     @Builder
-    public CategoryResponse(boolean success,
+    private CategoryResponse(boolean success,
                         String message,
                         DataDto content,
                         LocalDateTime timestamp) {
