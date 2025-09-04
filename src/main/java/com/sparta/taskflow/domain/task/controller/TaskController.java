@@ -5,6 +5,7 @@ import com.sparta.taskflow.common.response.ApiResponse;
 import com.sparta.taskflow.domain.task.dto.*;
 import com.sparta.taskflow.domain.task.enums.TaskStatus;
 import com.sparta.taskflow.domain.task.service.TaskService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,19 +35,19 @@ public class TaskController {
 
     //Task 생성
     @PostMapping("/api/tasks")
-    public ResponseEntity<ApiResponse<TaskResponse>> create(@RequestBody TaskRequest taskRequest){
+    public ResponseEntity<ApiResponse<TaskResponse>> create(@Valid @RequestBody TaskRequest taskRequest){
         return ApiResponse.created(taskService.create(taskRequest), "Task가 생성되었습니다.");
     }
 
     //Task 수정
     @PatchMapping("/api/tasks/{taskId}")
-    public ResponseEntity<ApiResponse<TaskResponse>> update(@PathVariable Long taskId, @RequestBody UpdateRequest updateRequest){
+    public ResponseEntity<ApiResponse<TaskResponse>> update(@PathVariable Long taskId, @Valid @RequestBody UpdateRequest updateRequest){
         return ApiResponse.success(taskService.update(taskId, updateRequest), "Task가 수정되었습니다.");
     }
 
     //Task 상태 수정
     @PatchMapping("/api/tasks/{taskId}/status")
-    public ResponseEntity<ApiResponse<TaskResponse>> updateStatus(@PathVariable Long taskId, @RequestBody StatusRequest statusRequest){
+    public ResponseEntity<ApiResponse<TaskResponse>> updateStatus(@PathVariable Long taskId, @Valid @RequestBody StatusRequest statusRequest){
         return ApiResponse.success(taskService.updateStatus(taskId, statusRequest), "작업 상태가 업데이트되었습니다.");
     }
 
