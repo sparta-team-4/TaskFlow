@@ -2,6 +2,8 @@ package com.sparta.taskflow.domain.task.repository;
 
 import com.sparta.taskflow.domain.task.entity.Task;
 import com.sparta.taskflow.domain.task.enums.TaskStatus;
+import com.sparta.taskflow.domain.task.exception.CustomException;
+import com.sparta.taskflow.domain.task.exception.TaskErrorCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +16,7 @@ import java.util.List;
 public interface TaskRepository extends JpaRepository<Task, Long> {
     default Task findTaskByIdOrThrow(Long postId) {
         return findById(postId).orElseThrow(
-                () -> new IllegalArgumentException("Task not found.")
+                () -> new CustomException(TaskErrorCode.TASK_NOT_FOUND)
         );
     }
 
@@ -22,13 +24,14 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
                 SELECT t
                 FROM Task t
                 JOIN t.assignee u
-                WHERE
-                    (t.title LIKE %:keyword% OR t.description LIKE %:keyword%)
-                AND
-                    (t.status = :status)
-                AND
-                    (u.id = :assigneeId)
+                WHERE t.isDeleted = false
+                AND (:keyword IS NULL
+                     OR t.title LIKE %:keyword%
+                     OR t.description LIKE %:keyword%)
+                AND (:status IS NULL OR t.status = :status)
+                AND (:assigneeId IS NULL OR u.id = :assigneeId)
             """)
+
     Page<Task> search(
             @Param("status") TaskStatus status,
             @Param("keyword") String keyword,

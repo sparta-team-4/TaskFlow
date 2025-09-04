@@ -41,23 +41,28 @@ public class Task extends BaseEntity {
     @Column(nullable = false)
     private LocalDateTime dueDate;
 
-    private LocalDateTime endDate; //nullable
+    private LocalDateTime endDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User assignee;
 
     @Builder
-    public Task(String title, String description, TaskPriority priority, LocalDateTime dueDate, User assignee) {
+    public Task(String title, String description,
+                TaskPriority priority, LocalDateTime dueDate,
+                User assignee, LocalDateTime endDate) {
         this.title = title;
         this.description = description;
         this.priority = priority;
         this.dueDate = dueDate;
         this.status = TaskStatus.TODO;
         this.assignee = assignee;
+        this.endDate = endDate;
     }
 
-    public void update(String title, String description, TaskPriority priority, LocalDateTime dueDate, TaskStatus status, User assignee){
+    public void update(String title, String description,
+                       TaskPriority priority, LocalDateTime dueDate,
+                       TaskStatus status, User assignee){
         this.title = title;
         this.description = description;
         this.priority = priority;
@@ -70,10 +75,14 @@ public class Task extends BaseEntity {
         this.status = status;
     }
 
+    public void updateEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
     //Task 삭제 검증
     public void validateTaskNotDeleted() {
         if (isDeleted()) {
-            throw new IllegalArgumentException("이미 삭제된 Task입니다.");
+            throw new IllegalArgumentException("이미 삭제된 Task 입니다.");
         }
     }
 

@@ -22,9 +22,9 @@ public class TaskController {
 
     //Task 목록 조회
     @GetMapping("/api/tasks")
-    public ResponseEntity<ApiPageResponse<TaskResponse>> getByCategory(@RequestParam Long assigneeId,
-                                                                       @RequestParam String keyword,
-                                                                       @RequestParam TaskStatus status,
+    public ResponseEntity<ApiPageResponse<TaskResponse>> getByCategory(@RequestParam(required = false) Long assigneeId,
+                                                                       @RequestParam(required = false) String keyword,
+                                                                       @RequestParam(required = false) TaskStatus status,
                                                                        @PageableDefault(page = 0, size = 10) Pageable pageable) {
         Page<TaskResponse> taskResponse = taskService.getByCategory(status, keyword, assigneeId, pageable);
         return ApiPageResponse.success(taskResponse, "Task 목록을 조회했습니다.");
