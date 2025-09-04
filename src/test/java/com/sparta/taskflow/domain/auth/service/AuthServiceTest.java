@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -22,14 +23,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
     @Mock
     UserRepository userRepository;
+
+    @Mock
+    PasswordEncoder passwordEncoder;
 
     @InjectMocks
     AuthService authService;
@@ -55,6 +58,7 @@ class AuthServiceTest {
         ));
 
         given(userRepository.existsByUsername(anyString())).willReturn(false);
+        given(passwordEncoder.encode(anyString())).willReturn("encodedPassword");
         given(userRepository.save(any(User.class))).willReturn(user);
 
         // when
@@ -80,9 +84,10 @@ class AuthServiceTest {
                 "password1234!"
         );
 
-        given(userRepository.existsByUsername(anyString())).willReturn(true);
+        // when
+        when(userRepository.existsByUsername(request.username())).thenReturn(true);
 
-        // when & then
+        // then
         assertThatThrownBy(() -> authService.signUp(request))
                 .isInstanceOf(DuplicateUsernameException.class)
                 .hasMessage("이미 존재하는 사용자명입니다");
