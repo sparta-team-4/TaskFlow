@@ -2,8 +2,8 @@ package com.sparta.taskflow.domain.task.repository;
 
 import com.sparta.taskflow.domain.task.entity.Task;
 import com.sparta.taskflow.domain.task.enums.TaskStatus;
-import com.sparta.taskflow.domain.task.exception.CustomException;
 import com.sparta.taskflow.domain.task.exception.TaskErrorCode;
+import com.sparta.taskflow.domain.task.exception.CustomException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

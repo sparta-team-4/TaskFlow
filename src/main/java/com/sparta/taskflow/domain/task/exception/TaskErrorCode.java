@@ -10,7 +10,8 @@ import org.springframework.http.HttpStatus;
 public enum TaskErrorCode implements ErrorCode {
 
     DELETED_TASK(HttpStatus.NOT_FOUND, "이미 삭제된 Task 입니다."),
-    TASK_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 Task 입니다");
+    TASK_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 Task 입니다"),
+    OWNER_MISMATCH(HttpStatus.UNAUTHORIZED, "작성자만 이용할 수 있습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

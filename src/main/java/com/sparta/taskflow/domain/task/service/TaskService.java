@@ -22,7 +22,7 @@ public class TaskService {
 
     //Task 생성
     @Transactional
-    public TaskResponse create(TaskRequest taskRequest) {
+    public TaskResponse create(TaskRequest taskRequest, Long loginUserId) {
         User assignee = userInternalService.getByIdOrThrow(taskRequest.getAssigneeId());
         Task data = Task.builder()
                 .title(taskRequest.getTitle())
@@ -31,6 +31,7 @@ public class TaskService {
                 .priority(taskRequest.getPriority())
                 .assignee(assignee)
                 .endDate(null)
+                .owner(loginUserId)
                 .build();
         Task task = taskRepository.save(data);
         return TaskResponse.create(task);
@@ -45,19 +46,19 @@ public class TaskService {
 
     //Task 상세 조회
     @Transactional(readOnly = true)
-    public TaskResponse getById(Long id) {
-        Task task = taskRepository.findTaskByIdOrThrow(id);
+    public TaskResponse getById(Long taskId) {
+        Task task = taskRepository.findTaskByIdOrThrow(taskId);
         task.validateTaskNotDeleted();
         return TaskResponse.create(task);
     }
 
     //Task 수정
     @Transactional
-    public TaskResponse update(Long id, UpdateRequest updateRequest) {
-        Task task = taskRepository.findTaskByIdOrThrow(id);
+    public TaskResponse update(Long taskId, UpdateRequest updateRequest, Long loginUserId) {
+        Task task = taskRepository.findTaskByIdOrThrow(taskId);
         task.validateTaskNotDeleted();
         User assignee = userInternalService.getByIdOrThrow(updateRequest.getAssigneeId());
-        //task.validateOwner(id);
+        task.validateOwner(loginUserId);
         if (updateRequest.getStatus().equals(TaskStatus.DONE)) {
             task.updateEndDate(LocalDateTime.now());
         } else {
@@ -74,10 +75,10 @@ public class TaskService {
 
     //Task 상태 수정
     @Transactional
-    public TaskResponse updateStatus(Long id, StatusRequest statusRequest) {
-        Task task = taskRepository.findTaskByIdOrThrow(id);
+    public TaskResponse updateStatus(Long taskId, StatusRequest statusRequest, Long loginUserId) {
+        Task task = taskRepository.findTaskByIdOrThrow(taskId);
         task.validateTaskNotDeleted();
-        //task.validateOwner(id);
+        task.validateOwner(loginUserId);
         if (statusRequest.getStatus().equals(TaskStatus.DONE)) {
             task.updateEndDate(LocalDateTime.now());
         } else {
@@ -89,10 +90,10 @@ public class TaskService {
 
     //Task 삭제
     @Transactional
-    public void delete(Long id) {
-        //task.validateOwner(id);
-        Task task = taskRepository.findTaskByIdOrThrow(id);
+    public void delete(Long taskId, Long loginUserId) {
+        Task task = taskRepository.findTaskByIdOrThrow(taskId);
         task.validateTaskNotDeleted();
-        taskRepository.setTrueTaskIsDeleted(id);
+        task.validateOwner(loginUserId);
+        taskRepository.setTrueTaskIsDeleted(taskId);
     }
 }
