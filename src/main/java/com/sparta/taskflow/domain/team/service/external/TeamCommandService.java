@@ -1,4 +1,4 @@
-package com.sparta.taskflow.domain.team.service;
+package com.sparta.taskflow.domain.team.service.external;
 
 import com.sparta.taskflow.domain.team.dto.TeamRequestDto;
 import com.sparta.taskflow.domain.team.dto.TeamResponseDto;
@@ -9,26 +9,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
-public class TeamInternalServiceImpl implements TeamInternalService {
-
+public class TeamCommandService {
     private final TeamRepository teamRepository;
 
-    @Override
-    @Transactional
-    public TeamResponseDto.Create createTeam(TeamRequestDto.Create requestDto) {
-        // 1. 팀 이름 중복 확인
-        if (teamRepository.existsByName(requestDto.getName())) {
-            throw new IllegalArgumentException("팀 이름이 이미 존재합니다");
+    public TeamResponseDto.Create createTeam(TeamRequestDto.Create requestDto){
+        // 팀 이름 중복 확인
+        if(teamRepository.existsByName(requestDto.getName())){
+            throw new IllegalArgumentException("팀 이름이 이미 존재합니다.");
         }
 
-        // 2. DTO -> Entity 변환
+        // DTO -> Entity 변환
         Team newTeam = requestDto.toEntity();
 
-        // 3. DB에 저장
+        // DB에 저장
         Team savedTeam = teamRepository.save(newTeam);
 
-        // 4. Entity -> DTO 변환 후 반환
+        // Entity -> DTO 변환 후 반환
         return TeamResponseDto.Create.from(savedTeam);
     }
 }
