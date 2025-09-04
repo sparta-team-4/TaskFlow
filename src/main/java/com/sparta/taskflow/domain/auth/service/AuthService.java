@@ -7,6 +7,7 @@ import com.sparta.taskflow.domain.user.exception.UserErrorCode;
 import com.sparta.taskflow.domain.user.repository.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public UserRegisterResponse signUp(UserRegisterRequest request) {
@@ -25,7 +27,9 @@ public class AuthService {
         }
 
         return UserRegisterResponse.from(
-                userRepository.save(request.toEntity())
+                userRepository.save(request.toEntity(
+                        passwordEncoder.encode(request.password())
+                ))
         );
     }
 }
