@@ -7,9 +7,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
+@SQLRestriction("is_deleted = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
 
@@ -53,5 +55,9 @@ public class User extends BaseEntity {
                 .name(name)
                 .role(Role.USER)
                 .build();
+    }
+
+    public void withdraw() {
+        this.isDeleted = true;
     }
 }

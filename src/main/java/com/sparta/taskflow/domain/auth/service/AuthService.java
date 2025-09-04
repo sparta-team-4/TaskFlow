@@ -7,8 +7,11 @@ import com.sparta.taskflow.domain.auth.dto.response.LoginResponse;
 import com.sparta.taskflow.domain.auth.dto.response.UserRegisterResponse;
 import com.sparta.taskflow.domain.auth.exception.AuthErrorCode;
 import com.sparta.taskflow.domain.auth.exception.DuplicateUsernameException;
+import com.sparta.taskflow.domain.auth.exception.InvalidPasswordException;
 import com.sparta.taskflow.domain.auth.exception.InvalidUsernameOrPasswordException;
 import com.sparta.taskflow.domain.user.entity.User;
+import com.sparta.taskflow.domain.user.exception.UserErrorCode;
+import com.sparta.taskflow.domain.user.exception.UserNotFoundException;
 import com.sparta.taskflow.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -51,5 +54,18 @@ public class AuthService {
         return LoginResponse.of(
                 jwtUtils.createToken(user.getId(), user.getRole())
         );
+    }
+
+    @Transactional
+    public void withdraw(Long userId, String rawPassword) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(UserErrorCode.USER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+            throw new InvalidPasswordException(AuthErrorCode.INVALID_PASSWORD);
+        }
+
+        user.withdraw();
     }
 }
