@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class TaskService {
@@ -28,6 +30,7 @@ public class TaskService {
                 .dueDate(taskRequest.getDueDate())
                 .priority(taskRequest.getPriority())
                 .assignee(assignee)
+                .endDate(null)
                 .build();
         Task task = taskRepository.save(data);
         return TaskResponse.create(task);
@@ -54,6 +57,11 @@ public class TaskService {
         Task task = taskRepository.findTaskByIdOrThrow(id);
         User assignee = userInternalService.getByIdOrThrow(updateRequest.getAssigneeId());
         //task.validateOwner(id);
+        if (updateRequest.getStatus().equals(TaskStatus.DONE)) {
+            task.updateEndDate(LocalDateTime.now());
+        } else {
+            task.updateEndDate(null);
+        }
         task.update(updateRequest.getTitle(),
                 updateRequest.getDescription(),
                 updateRequest.getPriority(),
@@ -68,6 +76,11 @@ public class TaskService {
     public TaskResponse updateStatus(Long id, StatusRequest statusRequest) {
         Task task = taskRepository.findTaskByIdOrThrow(id);
         //task.validateOwner(id);
+        if (statusRequest.getStatus().equals(TaskStatus.DONE)) {
+            task.updateEndDate(LocalDateTime.now());
+        } else {
+            task.updateEndDate(null);
+        }
         task.updateStatus(statusRequest.getStatus());
         return TaskResponse.create(task);
     }
