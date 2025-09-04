@@ -21,7 +21,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query("""
                 SELECT t
                 FROM Task t
-                JOIN t.user u
+                JOIN t.assignee u
                 WHERE
                     (t.title LIKE %:keyword% OR t.description LIKE %:keyword%)
                 AND

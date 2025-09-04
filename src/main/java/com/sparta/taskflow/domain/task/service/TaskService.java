@@ -12,8 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class TaskService {
@@ -29,24 +27,25 @@ public class TaskService {
                 .description(taskRequest.getDescription())
                 .dueDate(taskRequest.getDueDate())
                 .priority(taskRequest.getPriority())
-                .user(assignee)
+                .assignee(assignee)
                 .build();
         Task task = taskRepository.save(data);
-        return TaskResponse.response(task);
+        return TaskResponse.create(task);
     }
 
     //Task 목록 조회
     @Transactional(readOnly = true)
-    public CategoryResponse getByCategory(TaskStatus status, String keyword, Long assigneeId, Pageable pageable) {
+    public Page<TaskResponse> getByCategory(TaskStatus status, String keyword, Long assigneeId, Pageable pageable) {
         Page<Task> taskPage = taskRepository.search(status, keyword, assigneeId, pageable);
-        return CategoryResponse.getByCategoryResponse(DataDto.data(taskPage));
+        return taskPage.map(TaskResponse::create);
     }
 
     //Task 상세 조회
     @Transactional(readOnly = true)
     public TaskResponse getById(Long id) {
         Task task = taskRepository.findTaskByIdOrThrow(id);
-        return TaskResponse.getByIdResponse(task);
+        task.validateTaskNotDeleted();
+        return TaskResponse.create(task);
     }
 
     //Task 수정
@@ -54,28 +53,30 @@ public class TaskService {
     public TaskResponse update(Long id, UpdateRequest updateRequest) {
         Task task = taskRepository.findTaskByIdOrThrow(id);
         User assignee = userInternalService.getByIdOrThrow(updateRequest.getAssigneeId());
+        //task.validateOwner(id);
         task.update(updateRequest.getTitle(),
                 updateRequest.getDescription(),
                 updateRequest.getPriority(),
                 updateRequest.getDueDate(),
                 updateRequest.getStatus(),
                 assignee);
-        return TaskResponse.updateResponse(task);
+        return TaskResponse.create(task);
     }
 
     //Task 상태 수정
     @Transactional
     public TaskResponse updateStatus(Long id, StatusRequest statusRequest) {
         Task task = taskRepository.findTaskByIdOrThrow(id);
+        //task.validateOwner(id);
         task.updateStatus(statusRequest.getStatus());
-        return TaskResponse.updateStatusResponse(task);
+        return TaskResponse.create(task);
     }
 
     //Task 삭제
     @Transactional
-    public TaskResponse delete(Long id) {
+    public void delete(Long id) {
+        //task.validateOwner(id);
         taskRepository.findTaskByIdOrThrow(id);
         taskRepository.setTrueTaskIsDeleted(id);
-        return TaskResponse.deleteResponse(null);
     }
 }
