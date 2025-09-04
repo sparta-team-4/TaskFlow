@@ -3,6 +3,8 @@ package com.sparta.taskflow.domain.task.entity;
 import com.sparta.taskflow.common.entity.BaseEntity;
 import com.sparta.taskflow.domain.task.enums.TaskPriority;
 import com.sparta.taskflow.domain.task.enums.TaskStatus;
+import com.sparta.taskflow.domain.task.exception.CustomException;
+import com.sparta.taskflow.domain.task.exception.TaskErrorCode;
 import com.sparta.taskflow.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -82,7 +84,7 @@ public class Task extends BaseEntity {
     //Task 삭제 검증
     public void validateTaskNotDeleted() {
         if (isDeleted()) {
-            throw new IllegalArgumentException("이미 삭제된 Task 입니다.");
+            throw new CustomException(TaskErrorCode.DELETED_TASK);
         }
     }
 
