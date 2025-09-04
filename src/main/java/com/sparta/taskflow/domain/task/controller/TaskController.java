@@ -30,7 +30,7 @@ public class TaskController {
     }
     //Task 상세 조회
     @GetMapping("/api/tasks/{taskId}")
-    public ResponseEntity<ApiResponse<TaskResponse>> getByCategory(@PathVariable Long taskId){
+    public ResponseEntity<ApiResponse<TaskResponse>> getById(@PathVariable Long taskId){
         return ApiResponse.success(taskService.getById(taskId), "Task를 조회했습니다.");
     }
 
