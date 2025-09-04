@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,26 +36,32 @@ public class TaskController {
 
     //Task 생성
     @PostMapping("/api/tasks")
-    public ResponseEntity<ApiResponse<TaskResponse>> create(@Valid @RequestBody TaskRequest taskRequest){
-        return ApiResponse.created(taskService.create(taskRequest), "Task가 생성되었습니다.");
+    public ResponseEntity<ApiResponse<TaskResponse>> create(@Valid @RequestBody TaskRequest taskRequest,
+                                                            @AuthenticationPrincipal Long loginUserId){
+        return ApiResponse.created(taskService.create(taskRequest, loginUserId), "Task가 생성되었습니다.");
     }
 
     //Task 수정
     @PatchMapping("/api/tasks/{taskId}")
-    public ResponseEntity<ApiResponse<TaskResponse>> update(@PathVariable Long taskId, @Valid @RequestBody UpdateRequest updateRequest){
-        return ApiResponse.success(taskService.update(taskId, updateRequest), "Task가 수정되었습니다.");
+    public ResponseEntity<ApiResponse<TaskResponse>> update(@PathVariable Long taskId,
+                                                            @Valid @RequestBody UpdateRequest updateRequest,
+                                                            @AuthenticationPrincipal Long loginUserId){
+        return ApiResponse.success(taskService.update(taskId, updateRequest, loginUserId), "Task가 수정되었습니다.");
     }
 
     //Task 상태 수정
     @PatchMapping("/api/tasks/{taskId}/status")
-    public ResponseEntity<ApiResponse<TaskResponse>> updateStatus(@PathVariable Long taskId, @Valid @RequestBody StatusRequest statusRequest){
-        return ApiResponse.success(taskService.updateStatus(taskId, statusRequest), "작업 상태가 업데이트되었습니다.");
+    public ResponseEntity<ApiResponse<TaskResponse>> updateStatus(@PathVariable Long taskId,
+                                                                  @Valid @RequestBody StatusRequest statusRequest,
+                                                                  @AuthenticationPrincipal Long loginUserId){
+        return ApiResponse.success(taskService.updateStatus(taskId, statusRequest, loginUserId), "작업 상태가 업데이트되었습니다.");
     }
 
     //Task 삭제
     @DeleteMapping("/api/tasks/{taskId}")
-    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long taskId){
-        taskService.delete(taskId);
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long taskId,
+                                                    @AuthenticationPrincipal Long loginUserId){
+        taskService.delete(taskId, loginUserId);
         return ApiResponse.success(null, "Task가 삭제되었습니다.");
     }
 

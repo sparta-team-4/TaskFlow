@@ -49,10 +49,12 @@ public class Task extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User assignee;
 
+    private Long owner;
+
     @Builder
     public Task(String title, String description,
                 TaskPriority priority, LocalDateTime dueDate,
-                User assignee, LocalDateTime endDate) {
+                User assignee, LocalDateTime endDate, Long owner) {
         this.title = title;
         this.description = description;
         this.priority = priority;
@@ -60,6 +62,7 @@ public class Task extends BaseEntity {
         this.status = TaskStatus.TODO;
         this.assignee = assignee;
         this.endDate = endDate;
+        this.owner = owner;
     }
 
     public void update(String title, String description,
@@ -88,10 +91,10 @@ public class Task extends BaseEntity {
         }
     }
 
-//    // Task 작성자인지 검증
-//    public void validateOwner(Long userId) {
-//        if (!this.user.getId().equals(userId)) {
-//            throw new IllegalArgumentException("작성자만 이용할 수 있습니다.");
-//        }
-//    } jwt로 변경
+    // Task 작성자인지 검증
+    public void validateOwner(Long userId) {
+        if (!owner.equals(userId)) {
+            throw new CustomException(TaskErrorCode.OWNER_MISMATCH);
+        }
+    }
 }
