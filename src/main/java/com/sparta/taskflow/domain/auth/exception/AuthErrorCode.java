@@ -21,6 +21,7 @@ public enum AuthErrorCode implements ErrorCode {
     DUPLICATE_USERNAME(HttpStatus.BAD_REQUEST, "이미 존재하는 사용자명입니다"),
 
     // 토큰 데이터가 없을 때 400(Bad Request)
+    INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
     TOKEN_REQUIRED(HttpStatus.BAD_REQUEST, "JWT 토큰이 필요합니다.");
 
     private final HttpStatus httpStatus;
