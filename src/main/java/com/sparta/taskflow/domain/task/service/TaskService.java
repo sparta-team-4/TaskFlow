@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class TaskService implements TaskInternalService{
+public class TaskService {
     private final UserInternalService userInternalService;
     private final TaskRepository taskRepository;
 
@@ -77,15 +77,5 @@ public class TaskService implements TaskInternalService{
         taskRepository.findTaskByIdOrThrow(id);
         taskRepository.setTrueTaskIsDeleted(id);
         return TaskResponse.deleteResponse(null);
-    }
-
-    //internalService 메서드 구현
-    public Task getByIdOrThrow(Long assigneeId){
-        return taskRepository.findTaskByIdOrThrow(assigneeId);
-    }
-
-    public List<Task> getAllById(Long id){
-        userInternalService.getByIdOrThrow(id);
-        return taskRepository.findTaskByUserId(id);
     }
 }

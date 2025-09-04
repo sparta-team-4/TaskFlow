@@ -58,6 +58,7 @@ public class Task extends BaseEntity {
         this.dueDate = dueDate;
         this.status = TaskStatus.TODO;
         this.user = user;
+
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -73,5 +74,19 @@ public class Task extends BaseEntity {
 
     public void updateStatus(TaskStatus status) {
         this.status = status;
+    }
+
+    //Task 삭제 검증
+    public void validateTaskNotDeleted() {
+        if (isDeleted()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    // 댓글 작성자인지 검증
+    public void validateOwner(Long userId) {
+        if (!this.user.getId().equals(userId)) {
+            throw new IllegalArgumentException();
+        }
     }
 }
