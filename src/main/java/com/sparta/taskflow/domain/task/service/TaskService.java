@@ -55,6 +55,7 @@ public class TaskService {
     @Transactional
     public TaskResponse update(Long id, UpdateRequest updateRequest) {
         Task task = taskRepository.findTaskByIdOrThrow(id);
+        task.validateTaskNotDeleted();
         User assignee = userInternalService.getByIdOrThrow(updateRequest.getAssigneeId());
         //task.validateOwner(id);
         if (updateRequest.getStatus().equals(TaskStatus.DONE)) {
@@ -75,6 +76,7 @@ public class TaskService {
     @Transactional
     public TaskResponse updateStatus(Long id, StatusRequest statusRequest) {
         Task task = taskRepository.findTaskByIdOrThrow(id);
+        task.validateTaskNotDeleted();
         //task.validateOwner(id);
         if (statusRequest.getStatus().equals(TaskStatus.DONE)) {
             task.updateEndDate(LocalDateTime.now());
@@ -89,7 +91,8 @@ public class TaskService {
     @Transactional
     public void delete(Long id) {
         //task.validateOwner(id);
-        taskRepository.findTaskByIdOrThrow(id);
+        Task task = taskRepository.findTaskByIdOrThrow(id);
+        task.validateTaskNotDeleted();
         taskRepository.setTrueTaskIsDeleted(id);
     }
 }
