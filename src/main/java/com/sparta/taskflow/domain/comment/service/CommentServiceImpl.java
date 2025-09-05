@@ -1,19 +1,24 @@
 package com.sparta.taskflow.domain.comment.service;
 
 import com.sparta.taskflow.domain.comment.entity.Comment;
+import com.sparta.taskflow.domain.comment.repository.CommentRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
-//추후 기능 추가
+@Service
+@RequiredArgsConstructor
 public class CommentServiceImpl implements CommentInternalService{
-    public Comment getByIdOrThrow(Long id){
-        return null;
+    private final CommentRepository commentRepository;
+
+    //comment id로 조회
+    public Comment getByIdOrThrow(Long commentId){
+        return commentRepository.findByIdOrThrow(commentId);
     }
 
-    public List<Comment> getAllById(Long id){
-        return null;
-    }
-
-    public List<Comment> getAllByIds(List<Long> ids){
-        return null;
+    //userId의 comment 조회
+    public List<Comment> getAllById(Long userId){
+        return commentRepository.findAllByUserId(userId);
     }
 }
