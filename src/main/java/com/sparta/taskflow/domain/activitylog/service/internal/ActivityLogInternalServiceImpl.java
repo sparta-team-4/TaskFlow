@@ -5,9 +5,8 @@ import com.sparta.taskflow.domain.activitylog.enums.ActivityType;
 import com.sparta.taskflow.domain.activitylog.exception.ActivityLogErrorCode;
 import com.sparta.taskflow.domain.activitylog.exception.ActivityLogUnauthorizedException;
 import com.sparta.taskflow.domain.activitylog.repository.ActivityLogRepository;
-import com.sparta.taskflow.domain.task.enums.TaskStatus;
 import com.sparta.taskflow.domain.user.entity.User;
-import com.sparta.taskflow.domain.user.service.internal.UserInternalServiceImpl;
+import com.sparta.taskflow.domain.user.service.UserInternalServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,8 +26,11 @@ public class ActivityLogInternalServiceImpl implements  ActivityLogInternalServi
     }
 
     @Transactional
-    public void saveActivityLog(ActivityType type, String description, User user, Long taskId) {
-        ActivityLog activityLog = ActivityLog.create(type, description, user, taskId);
+    public void log(ActivityType type, Long userId, Long taskId, Object... args) {
+        User user = userInternalServiceImpl.getByIdOrThrow(userId);
+
+        ActivityLog activityLog = ActivityLog.create(type, user, taskId, args);
+
         activityLogRepository.save(activityLog);
     }
 }

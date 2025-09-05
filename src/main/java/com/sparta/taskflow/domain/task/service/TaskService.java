@@ -1,5 +1,8 @@
 package com.sparta.taskflow.domain.task.service;
 
+import com.sparta.taskflow.common.logs.annotation.Loggable;
+import com.sparta.taskflow.domain.activitylog.enums.ActivityType;
+import com.sparta.taskflow.domain.activitylog.service.internal.ActivityLogInternalServiceImpl;
 import com.sparta.taskflow.domain.task.dto.*;
 import com.sparta.taskflow.domain.task.entity.Task;
 import com.sparta.taskflow.domain.task.enums.TaskStatus;
@@ -12,18 +15,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-
 @Service
 @RequiredArgsConstructor
 public class TaskService {
     private final UserInternalService userInternalService;
     private final TaskRepository taskRepository;
+    private final ActivityLogInternalServiceImpl activityLogInternalServiceImpl;
 
     //Task 생성
+    @Loggable
     @Transactional
     public TaskResponse create(TaskRequest taskRequest, Long loginUserId) {
         User assignee = userInternalService.getByIdOrThrow(taskRequest.getAssigneeId());
+
         Task data = Task.builder()
                 .title(taskRequest.getTitle())
                 .description(taskRequest.getDescription())
@@ -33,7 +37,11 @@ public class TaskService {
                 .endDate(null)
                 .owner(loginUserId)
                 .build();
+
         Task task = taskRepository.save(data);
+
+        activityLogInternalServiceImpl.log(ActivityType.TASK_CREATED, loginUserId, task.getId(), task.getTitle());
+
         return TaskResponse.create(task);
     }
 
@@ -53,6 +61,7 @@ public class TaskService {
     }
 
     //Task 수정
+    @Loggable
     @Transactional
     public TaskResponse update(Long taskId, UpdateRequest updateRequest, Long loginUserId) {
         Task task = taskRepository.findTaskByIdOrThrow(taskId);
@@ -66,26 +75,41 @@ public class TaskService {
                 updateRequest.getDueDate(),
                 updateRequest.getStatus(),
                 assignee);
+
+        activityLogInternalServiceImpl.log(ActivityType.TASK_UPDATED, loginUserId, taskId);
+
         return TaskResponse.create(task);
     }
 
     //Task 상태 수정
+    @Loggable
     @Transactional
     public TaskResponse updateStatus(Long taskId, StatusRequest statusRequest, Long loginUserId) {
+
         Task task = taskRepository.findTaskByIdOrThrow(taskId);
         task.validateTaskNotDeleted();
         task.recordEndDate(statusRequest.getStatus());
         task.validateOwner(loginUserId);
-        task.updateStatus(statusRequest.getStatus());
+
+        TaskStatus ordStatus = task.getStatus();
+        TaskStatus newStatus = statusRequest.getStatus();
+
+        task.updateStatus(newStatus);
+
+        activityLogInternalServiceImpl.log(ActivityType.TASK_STATUS_CHANGED, loginUserId, taskId, ordStatus, newStatus);
+
         return TaskResponse.create(task);
     }
 
     //Task 삭제
+    @Loggable
     @Transactional
     public void delete(Long taskId, Long loginUserId) {
         Task task = taskRepository.findTaskByIdOrThrow(taskId);
         task.validateTaskNotDeleted();
         task.validateOwner(loginUserId);
         taskRepository.setTrueTaskIsDeleted(taskId);
+
+        activityLogInternalServiceImpl.log(ActivityType.TASK_DELETED, loginUserId, taskId);
     }
 }
