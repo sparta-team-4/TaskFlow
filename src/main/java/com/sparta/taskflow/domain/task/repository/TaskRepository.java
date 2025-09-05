@@ -39,7 +39,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             Pageable pageable
     );
 
-    List<Task> findAllByAssigneeIdAndIsDeletedFalse(Long assigneeId);
+    List<Task> findAllByAssigneeId(Long assigneeId);
 
     @Modifying
     @Query("UPDATE Task u SET u.isDeleted = true WHERE u.id = :id")
