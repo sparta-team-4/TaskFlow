@@ -87,4 +87,14 @@ public class TeamCommandService {
 
         return TeamResponseDto.Get.from(updatedTeam);
     }
+
+    // 팀 멤버 삭제
+    public void deleteMember(Long teamId, Long userId) {
+        // 1. 삭제할 팀 멤버 관계를 조회합니다.
+        TeamMember teamMember = teamMemberRepository.findByTeamIdAndUserId(teamId, userId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 사용자는 팀의 멤버가 아닙니다."));
+
+        // 2. 조회된 팀 멤버 관계를 삭제합니다.
+        teamMemberRepository.delete(teamMember);
+    }
 }
