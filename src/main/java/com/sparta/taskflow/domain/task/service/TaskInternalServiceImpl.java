@@ -13,8 +13,8 @@ public class TaskInternalServiceImpl implements TaskInternalService {
     private final TaskRepository taskRepository;
 
     //internalService 메서드 구현
-    public Task getByIdOrThrow(Long id){
-        Task findTask = taskRepository.findTaskByIdOrThrow(id);
+    public Task getByIdOrThrow(Long assigneeId){
+        Task findTask = taskRepository.findTaskByIdOrThrow(assigneeId);
         findTask.validateTaskNotDeleted();
         return findTask;
     }
