@@ -19,6 +19,6 @@ public class CommentServiceImpl implements CommentInternalService{
 
     //userId의 comment 조회
     public List<Comment> getAllById(Long userId){
-        return commentRepository.findAllByUserId(userId);
+        return commentRepository.findAllByUser_Id(userId);
     }
 }

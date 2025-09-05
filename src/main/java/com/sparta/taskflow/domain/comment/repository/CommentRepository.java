@@ -19,5 +19,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @EntityGraph(attributePaths = {"childComments"})
     Page<Comment> findAllByTaskId(Long taskId, Pageable pageable);
 
-    List<Comment> findAllByUserId(Long userId);
+    List<Comment> findAllByUser_Id(Long userId);
 }
