@@ -4,6 +4,7 @@ import com.sparta.taskflow.common.entity.BaseEntity;
 import com.sparta.taskflow.domain.comment.exception.CommentErrorCode;
 import com.sparta.taskflow.domain.comment.exception.CustomException;
 import com.sparta.taskflow.domain.task.entity.Task;
+import com.sparta.taskflow.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -22,8 +23,9 @@ public class Comment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50)
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(nullable = false)
     private String content;
@@ -31,8 +33,6 @@ public class Comment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id", nullable = false)
     private Task task;
-
-    private Long userId; //댓글 작성자 id
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
@@ -42,10 +42,9 @@ public class Comment extends BaseEntity {
     private List<Comment> childComments = new ArrayList<>();
 
     @Builder
-    public Comment (String name, String content, Long userId, Task task, Comment parentComment) {
-        this.name = name;
+    public Comment (User user, String content, Task task, Comment parentComment) {
+        this.user = user;
         this.content = content;
-        this.userId = userId;
         this.task = task;
         this.parentComment = parentComment;
     }
@@ -56,7 +55,7 @@ public class Comment extends BaseEntity {
 
     //Comment 작성자인지 검증
     public void validateOwner(Long loginUserId) {
-        if (!userId.equals(loginUserId)) {
+        if (!(user.getId()).equals(loginUserId)) {
             throw new CustomException(CommentErrorCode.OWNER_MISMATCH);
         }
     }

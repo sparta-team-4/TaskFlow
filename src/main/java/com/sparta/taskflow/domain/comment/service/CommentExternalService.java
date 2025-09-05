@@ -7,6 +7,7 @@ import com.sparta.taskflow.domain.comment.entity.Comment;
 import com.sparta.taskflow.domain.comment.repository.CommentRepository;
 import com.sparta.taskflow.domain.task.entity.Task;
 import com.sparta.taskflow.domain.task.service.TaskInternalService;
+import com.sparta.taskflow.domain.user.entity.User;
 import com.sparta.taskflow.domain.user.service.UserInternalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,14 +34,14 @@ public class CommentExternalService {
     @Transactional
     public CommentResponse create(Long loginUserId, Long taskId, CommentRequest commentRequest){
         Task task = taskInternalService.getByIdOrThrow(taskId);
+        User user = userInternalService.getByIdOrThrow(loginUserId);
         Comment parentComment = null;
         if (commentRequest.getParentId() != null) {
             parentComment = commentRepository.findByIdOrThrow(commentRequest.getParentId());
         }
         Comment comment = Comment.builder()
-                .name(userInternalService.getByIdOrThrow(loginUserId).getName())
+                .user(user)
                 .content(commentRequest.getContent())
-                .userId(loginUserId)
                 .task(task)
                 .parentComment(parentComment)
                 .build();
