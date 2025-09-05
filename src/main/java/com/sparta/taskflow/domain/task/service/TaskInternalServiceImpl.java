@@ -20,6 +20,6 @@ public class TaskInternalServiceImpl implements TaskInternalService {
     }
 
     public List<Task> getAllById(Long id){
-        return taskRepository.findAllByAssigneeId(id);
+        return taskRepository.findAllByAssigneeIdAndIsDeletedFalse(id);
     }
 }
