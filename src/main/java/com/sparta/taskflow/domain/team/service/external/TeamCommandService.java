@@ -3,19 +3,23 @@ package com.sparta.taskflow.domain.team.service.external;
 import com.sparta.taskflow.domain.team.dto.TeamRequestDto;
 import com.sparta.taskflow.domain.team.dto.TeamResponseDto;
 import com.sparta.taskflow.domain.team.entity.Team;
+import com.sparta.taskflow.domain.team.entity.TeamMember;
+import com.sparta.taskflow.domain.team.repository.TeamMemberRepository;
 import com.sparta.taskflow.domain.team.repository.TeamRepository;
+import com.sparta.taskflow.domain.user.entity.User;
+import com.sparta.taskflow.domain.user.service.internal.UserInternalService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class TeamCommandService {
     private final TeamRepository teamRepository;
+    private final TeamMemberRepository teamMemberRepository;
+    private final UserInternalService userInternalService;
 
     // 팀 생성
     public TeamResponseDto.Create createTeam(TeamRequestDto.Create requestDto){
@@ -59,5 +63,28 @@ public class TeamCommandService {
                 .orElseThrow(() -> new EntityNotFoundException("팀을 찾을 수 없습니다."));
 
         teamRepository.delete(team);
+    }
+
+    // 팀 멤버 추가
+    public TeamResponseDto.Get addMember(Long teamId, TeamRequestDto.AddMember requestDto) {
+        // 1. 팀과 유저 엔티티 조회
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new EntityNotFoundException("팀을 찾을 수 없습니다."));
+        User user = userInternalService.getUserByIdOrThrow(requestDto.getUserId());
+
+        // 2. 이미 멤버인지 확인
+        if (teamMemberRepository.existsByTeamAndUser(team, user)) {
+            throw new IllegalArgumentException("이미 팀 멤버입니다.");
+        }
+
+        // 3. TeamMember 엔티티 생성 및 저장
+        TeamMember teamMember = new TeamMember(team, user);
+        teamMemberRepository.save(teamMember);
+
+        // 4. 변경사항이 적용된 Team 정보를 다시 조회하여 DTO로 반환
+        Team updatedTeam = teamRepository.findById(teamId)
+                .orElseThrow(() -> new EntityNotFoundException("팀을 찾을 수 없습니다."));
+
+        return TeamResponseDto.Get.from(updatedTeam);
     }
 }

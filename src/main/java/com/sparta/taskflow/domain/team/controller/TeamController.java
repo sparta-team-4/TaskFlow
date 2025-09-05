@@ -63,4 +63,14 @@ public class TeamController {
         teamCommandService.deleteTeam(teamId);
         return ApiResponse.success(null, "팀이 성공적으로 삭제되었습니다.");
     }
+
+    // 팀 멤버 추가
+    @PostMapping("/{teamId}/members")
+    public ResponseEntity<ApiResponse<TeamResponseDto.Get>> addTeamMember(
+            @PathVariable Long teamId,
+            @RequestBody TeamRequestDto.AddMember requestDto) {
+
+        TeamResponseDto.Get responseDto = teamCommandService.addMember(teamId, requestDto);
+        return ApiResponse.success(responseDto, "멤버가 성공적으로 추가되었습니다.");
+    }
 }
