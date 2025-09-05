@@ -6,6 +6,7 @@ import com.sparta.taskflow.domain.auth.dto.request.LoginRequest;
 import com.sparta.taskflow.domain.auth.dto.request.UserRegisterRequest;
 import com.sparta.taskflow.domain.auth.dto.response.LoginResponse;
 import com.sparta.taskflow.domain.auth.dto.response.UserRegisterResponse;
+import com.sparta.taskflow.domain.auth.exception.DuplicateEmailException;
 import com.sparta.taskflow.domain.auth.exception.DuplicateUsernameException;
 import com.sparta.taskflow.domain.auth.exception.InvalidPasswordException;
 import com.sparta.taskflow.domain.auth.exception.InvalidUsernameOrPasswordException;
@@ -70,7 +71,7 @@ class AuthServiceTest {
                     "createdAt", createdAt
             ));
 
-            given(userRepository.existsByUsername(anyString())).willReturn(false);
+            given(userRepository.countByUsernameAndIsDeletedFalse(anyString())).willReturn(0);
             given(passwordEncoder.encode(anyString())).willReturn("encodedPassword");
             given(userRepository.save(any(User.class))).willReturn(user);
 
@@ -82,7 +83,7 @@ class AuthServiceTest {
                     .extracting("id", "username", "email", "name", "role", "createdAt")
                     .contains(1L, "test", "test@test.com", "won se", Role.USER, createdAt);
 
-            verify(userRepository, times(1)).existsByUsername(anyString());
+            verify(userRepository, times(1)).countByUsernameAndIsDeletedFalse(anyString());
             verify(userRepository, times(1)).save(any(User.class));
         }
 
@@ -98,12 +99,33 @@ class AuthServiceTest {
             );
 
             // when
-            when(userRepository.existsByUsername(request.username())).thenReturn(true);
+            when(userRepository.countByUsernameAndIsDeletedFalse(request.username())).thenReturn(1);
 
             // then
             assertThatThrownBy(() -> authService.userRegister(request))
                     .isInstanceOf(DuplicateUsernameException.class)
                     .hasMessage("이미 존재하는 사용자명입니다");
+        }
+
+        @Test
+        @DisplayName("이미 존재하는 이메일이 있으면 회원가입을 할 수 없다.")
+        void userRegister_fail_whenDuplicateEmail() {
+            // given
+            UserRegisterRequest request = new UserRegisterRequest(
+                    "test",
+                    "won se",
+                    "test@test.com",
+                    "password1234!"
+            );
+            given(userRepository.countByUsernameAndIsDeletedFalse(anyString())).willReturn(0);
+
+            // when
+            when(userRepository.countByEmailAndIsDeletedFalse(anyString())).thenReturn(1);
+
+            // then
+            assertThatThrownBy(() -> authService.userRegister(request))
+                    .isInstanceOf(DuplicateEmailException.class)
+                    .hasMessage("이미 존재하는 이메일입니다");
         }
     }
 
