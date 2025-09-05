@@ -1,50 +1,65 @@
 package com.sparta.taskflow.domain.comment.controller;
 
+import com.sparta.taskflow.common.response.ApiPageResponse;
 import com.sparta.taskflow.common.response.ApiResponse;
 import com.sparta.taskflow.domain.comment.dto.CommentRequest;
 import com.sparta.taskflow.domain.comment.dto.CommentResponse;
 import com.sparta.taskflow.domain.comment.dto.UpdateRequest;
+import com.sparta.taskflow.domain.comment.enums.CommentSort;
 import com.sparta.taskflow.domain.comment.service.CommentExternalService;
-import lombok.AccessLevel;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@RequiredArgsConstructor
 public class CommentController {
-    private CommentExternalService commentService;
+    private final CommentExternalService commentService;
 
     //Task의 댓글 목록 조회
     @GetMapping("/api/tasks/{taskId}/comments")
-    public ResponseEntity<ApiResponse<CommentResponse>> getAllComment(@AuthenticationPrincipal Long loginUserId){
-        return ApiResponse.success("댓글이 생성되었습니다.");
+    public ResponseEntity<ApiPageResponse<CommentResponse>> getAllComment(@PathVariable Long taskId,
+                                                                          @RequestParam(defaultValue = "0") int page,
+                                                                          @RequestParam(defaultValue = "10") int size,
+                                                                          @RequestParam(defaultValue = "NEWEST") CommentSort sort){
+        Sort.Direction direction = sort == CommentSort.NEWEST
+                ? Sort.Direction.DESC
+                : Sort.Direction.ASC;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "createdAt"));
+        Page<CommentResponse> commentResponse = commentService.getCommentByPage(taskId, pageable);
+        return ApiPageResponse.success(commentResponse, "댓글 목록을 조회했습니다.");
     }
 
     //댓글 & 대댓글 생성
-    @GetMapping("/api/tasks/{taskId}/comments")
+    @PostMapping("/api/tasks/{taskId}/comments")
     public ResponseEntity<ApiResponse<CommentResponse>> createComment(@AuthenticationPrincipal Long loginUserId,
                                                                       @PathVariable Long taskId,
-                                                                      @RequestBody CommentRequest commentRequest){
-        return ApiResponse.success(commentService.create(loginUserId,commentRequest,taskId),"댓글이 생성되었습니다.");
+                                                                      @Valid @RequestBody CommentRequest commentRequest){
+        return ApiResponse.success(commentService.create(loginUserId, taskId, commentRequest),"댓글이 생성되었습니다.");
     }
 
     //댓글 수정
-    @GetMapping("/api/tasks/{taskId}/comments/{commentId}")
-    public ResponseEntity<ApiResponse<CommentResponse>> update(@PathVariable Long taskId,
+    @PatchMapping("/api/tasks/{taskId}/comments/{commentId}")
+    public ResponseEntity<ApiResponse<CommentResponse>> update(@AuthenticationPrincipal Long loginUserId,
+                                                               @PathVariable Long taskId,
                                                                @PathVariable Long commentId,
-                                                               @RequestBody UpdateRequest updateRequest){
-        return ApiResponse.success(commentService.update(loginUserId,commentRequest,taskId),"댓글이 수정되었습니다.");
+                                                               @Valid @RequestBody UpdateRequest updateRequest){
+        return ApiResponse.success(commentService.update(loginUserId, taskId, commentId, updateRequest),"댓글이 수정되었습니다.");
     }
 
     //댓글 삭제
-    @GetMapping("/api/tasks/{taskId}/comments/{commentId}")
-    public ResponseEntity<ApiResponse<CommentResponse>> delete(@PathVariable Long taskId,
-                                                               @PathVariable Long commentId){
-        return ApiResponse.success(commentService.delete(taskId, commentId),"댓글이 삭제되었습니다.");
+    @DeleteMapping("/api/tasks/{taskId}/comments/{commentId}")
+    public ResponseEntity<ApiResponse<Void>> delete(@AuthenticationPrincipal Long loginUserId,
+                                                    @PathVariable Long taskId,
+                                                    @PathVariable Long commentId){
+        commentService.delete(loginUserId, taskId, commentId);
+        return ApiResponse.success(null,"댓글이 삭제되었습니다.");
     }
 }

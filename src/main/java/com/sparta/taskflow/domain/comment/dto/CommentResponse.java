@@ -5,7 +5,6 @@ import com.sparta.taskflow.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
 import java.time.LocalDateTime;
 
 @Getter
@@ -39,10 +38,10 @@ public class CommentResponse {
                 .id(comment.getId())
                 .content(comment.getContent())
                 .taskId(comment.getTask().getId())
-                .userId(comment.getTask().getUser().getId())
+                .userId(comment.getUserId())
                 .user(comment.getTask().getUser())
-                .createdAt(comment.createdAt())
-                .updatedAt(comment.updatedAt())
-                .bulid();
+                .createdAt(comment.getCreatedAt())
+                .updatedAt(comment.getUpdatedAt())
+                .build();
     }
 }

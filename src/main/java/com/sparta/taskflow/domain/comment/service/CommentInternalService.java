@@ -9,6 +9,4 @@ public interface CommentInternalService {
     Comment getByIdOrThrow(Long id);
 
     List<Comment> getAllById(Long id);
-
-    List<Comment> getAllByIds(List<Long> ids);
 }

@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum CommentErrorCode implements ErrorCode {
 
-    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 comment 입니다.");
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 comment 입니다."),
+    OWNER_MISMATCH(HttpStatus.UNAUTHORIZED, "작성자만 이용할 수 있습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
