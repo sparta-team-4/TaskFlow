@@ -3,8 +3,6 @@ package com.sparta.taskflow.common.logs.aspect;
 import com.sparta.taskflow.common.logs.exception.AuthenticationRequiredException;
 import com.sparta.taskflow.common.logs.exception.LogErrorCode;
 import com.sparta.taskflow.common.security.model.CustomUserAuthentication;
-import com.sparta.taskflow.domain.user.entity.User;
-import com.sparta.taskflow.domain.user.service.external.UserExternalService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
