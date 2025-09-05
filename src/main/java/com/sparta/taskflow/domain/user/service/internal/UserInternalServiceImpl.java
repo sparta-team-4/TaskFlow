@@ -6,6 +6,7 @@ import com.sparta.taskflow.domain.user.exception.UserNotFoundException;
 import com.sparta.taskflow.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +15,7 @@ public class UserInternalServiceImpl implements UserInternalService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public User getByIdOrThrow(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(UserErrorCode.USER_NOT_FOUND));
