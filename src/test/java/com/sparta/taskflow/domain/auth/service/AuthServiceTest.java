@@ -172,4 +172,51 @@ class AuthServiceTest {
         }
     }
 
+    @Nested
+    @DisplayName("회원 탈퇴")
+    class WithdrawTest {
+
+        @Test
+        @DisplayName("비밀번호가 일치하면 회원탈퇴가 된다.")
+        void withdraw_success() {
+            // given
+            Long userId = 1L;
+            String rawPassword = "password12345!";
+            User user = TestUtils.createEntity(User.class, Map.of(
+                    "id", userId,
+                    "password", "encodedPassword",
+                    "isDeleted", false
+            ));
+
+            given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
+            given(passwordEncoder.matches(anyString(), anyString())).willReturn(true);
+
+            // when
+            authService.withdraw(userId, rawPassword);
+
+            // then
+            assertThat(user.isDeleted()).isTrue();
+        }
+
+        @Test
+        @DisplayName("비밀번호가 일치하지 않은 경우.")
+        void withdraw_fail_whenInvalidPassword() {
+            // given
+            Long userId = 1L;
+            String rawPassword = "password12345!";
+            User user = TestUtils.createEntity(User.class, Map.of(
+                    "id", userId,
+                    "password", "encodedPassword"
+            ));
+            given(userRepository.findById(anyLong())).willReturn(Optional.of(user));
+
+            // when
+            when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
+
+            // then
+            assertThatThrownBy(() -> authService.withdraw(userId, rawPassword))
+                    .isInstanceOf(InvalidPasswordException.class)
+                    .hasMessage("비밀번호가 일치하지 않습니다.");
+        }
+    }
 }
