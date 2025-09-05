@@ -12,7 +12,7 @@ public class AssigneeDto {
     private final String email;
 
     @Builder
-    public AssigneeDto(Long id, String username,
+    private AssigneeDto(Long id, String username,
                        String name, String email) {
         this.id = id;
         this.username = username;
