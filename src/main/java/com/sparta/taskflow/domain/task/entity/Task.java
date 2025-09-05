@@ -3,17 +3,22 @@ package com.sparta.taskflow.domain.task.entity;
 import com.sparta.taskflow.common.entity.BaseEntity;
 import com.sparta.taskflow.domain.task.enums.TaskPriority;
 import com.sparta.taskflow.domain.task.enums.TaskStatus;
+import com.sparta.taskflow.domain.task.exception.CustomException;
+import com.sparta.taskflow.domain.task.exception.TaskErrorCode;
 import com.sparta.taskflow.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLRestriction("is_deleted = false")
 public class Task extends BaseEntity {
 
     @Id
@@ -23,7 +28,7 @@ public class Task extends BaseEntity {
     @Column(nullable = false)
     private String title;
 
-    @Column(length = 600)
+    @Column(nullable = false, length = 600)
     private String description;
 
     @Enumerated(EnumType.STRING)
@@ -33,9 +38,6 @@ public class Task extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TaskStatus status;
-
-    @Column(length = 50)
-    private String assignee;
 
     @Column(nullable = false)
     private boolean isDeleted = false;
@@ -47,5 +49,61 @@ public class Task extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private User assignee;
+
+    private Long owner;
+
+    @Builder
+    public Task(String title, String description,
+                TaskPriority priority, LocalDateTime dueDate,
+                User assignee, LocalDateTime endDate, Long owner) {
+        this.title = title;
+        this.description = description;
+        this.priority = priority;
+        this.dueDate = dueDate;
+        this.status = TaskStatus.TODO;
+        this.assignee = assignee;
+        this.endDate = endDate;
+        this.owner = owner;
+    }
+
+    public void update(String title, String description,
+                       TaskPriority priority, LocalDateTime dueDate,
+                       TaskStatus status, User assignee){
+        this.title = title;
+        this.description = description;
+        this.priority = priority;
+        this.dueDate = dueDate;
+        this.status = status;
+        this.assignee = assignee;
+    }
+
+    public void updateStatus(TaskStatus status) {
+        this.status = status;
+    }
+
+    //Task 삭제 검증
+    public void validateTaskNotDeleted() {
+        if (isDeleted()) {
+            throw new CustomException(TaskErrorCode.DELETED_TASK);
+        }
+    }
+
+    // Task 작성자인지 검증
+    public void validateOwner(Long userId) {
+        if (!owner.equals(userId)) {
+            throw new CustomException(TaskErrorCode.OWNER_MISMATCH);
+        }
+    }
+
+    //endDate 기록
+    public void recordEndDate(TaskStatus status) {
+        this.status = status;
+        if (status == TaskStatus.DONE) {
+            this.endDate = LocalDateTime.now();
+        } else {
+            this.endDate = null;
+        }
+    }
+
 }

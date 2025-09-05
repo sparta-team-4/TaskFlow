@@ -21,4 +21,12 @@ public class TeamRequestDto {
                     .build();
         }
     }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Update {
+        private String name;
+        private String description;
+    }
 }
