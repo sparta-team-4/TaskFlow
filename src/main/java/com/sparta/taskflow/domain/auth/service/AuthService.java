@@ -5,10 +5,7 @@ import com.sparta.taskflow.domain.auth.dto.request.LoginRequest;
 import com.sparta.taskflow.domain.auth.dto.request.UserRegisterRequest;
 import com.sparta.taskflow.domain.auth.dto.response.LoginResponse;
 import com.sparta.taskflow.domain.auth.dto.response.UserRegisterResponse;
-import com.sparta.taskflow.domain.auth.exception.AuthErrorCode;
-import com.sparta.taskflow.domain.auth.exception.DuplicateUsernameException;
-import com.sparta.taskflow.domain.auth.exception.InvalidPasswordException;
-import com.sparta.taskflow.domain.auth.exception.InvalidUsernameOrPasswordException;
+import com.sparta.taskflow.domain.auth.exception.*;
 import com.sparta.taskflow.domain.user.entity.User;
 import com.sparta.taskflow.domain.user.exception.UserErrorCode;
 import com.sparta.taskflow.domain.user.exception.UserNotFoundException;
@@ -30,8 +27,12 @@ public class AuthService {
     @Transactional
     public UserRegisterResponse userRegister(UserRegisterRequest request) {
 
-        if (userRepository.existsByUsername(request.username())) {
+        if (isDuplicateUsername(request)) {
             throw new DuplicateUsernameException(AuthErrorCode.DUPLICATE_USERNAME);
+        }
+
+        if (isDuplicateEmail(request)) {
+            throw new DuplicateEmailException(AuthErrorCode.DUPLICATE_EMAIL);
         }
 
         return UserRegisterResponse.from(
@@ -67,5 +68,13 @@ public class AuthService {
         }
 
         user.withdraw();
+    }
+
+    private boolean isDuplicateUsername(UserRegisterRequest request) {
+        return userRepository.countByUsernameAndIsDeletedFalse(request.username()) > 0;
+    }
+
+    private boolean isDuplicateEmail(UserRegisterRequest request) {
+        return userRepository.countByEmailAndIsDeletedFalse(request.email()) > 0;
     }
 }
