@@ -4,6 +4,7 @@ import com.sparta.taskflow.common.entity.BaseEntity;
 import com.sparta.taskflow.domain.task.entity.Task;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -35,4 +36,16 @@ public class Comment extends BaseEntity {
 
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> childComments = new ArrayList<>();
+
+    @Builder
+    public Comment (String name, String content, Task task, Comment parentComment) {
+        this.name = name;
+        this.content = content;
+        this.task = task;
+        this.parentComment = parentComment;
+    }
+
+    public void update(String content) {
+        this.content = content;
+    }
 }
