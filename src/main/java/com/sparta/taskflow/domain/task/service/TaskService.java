@@ -84,6 +84,7 @@ public class TaskService {
     @Loggable
     @Transactional
     public TaskResponse updateStatus(Long taskId, StatusRequest statusRequest, Long loginUserId) {
+
         Task task = taskRepository.findTaskByIdOrThrow(taskId);
         task.validateTaskNotDeleted();
         task.recordEndDate(statusRequest.getStatus());
