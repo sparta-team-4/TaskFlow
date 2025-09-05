@@ -12,8 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-
 @Service
 @RequiredArgsConstructor
 public class TaskService {
@@ -54,12 +52,11 @@ public class TaskService {
 
     //Task 수정
     @Transactional
-    public TaskResponse update(Long taskId, UpdateRequest updateRequest, Long loginUserId) {
+    public TaskResponse update(Long taskId, UpdateRequest updateRequest) {
         Task task = taskRepository.findTaskByIdOrThrow(taskId);
         task.validateTaskNotDeleted();
         User assignee = userInternalService.getByIdOrThrow(updateRequest.getAssigneeId());
         task.recordEndDate(updateRequest.getStatus());
-        task.validateOwner(loginUserId);
         task.update(updateRequest.getTitle(),
                 updateRequest.getDescription(),
                 updateRequest.getPriority(),
@@ -71,21 +68,19 @@ public class TaskService {
 
     //Task 상태 수정
     @Transactional
-    public TaskResponse updateStatus(Long taskId, StatusRequest statusRequest, Long loginUserId) {
+    public TaskResponse updateStatus(Long taskId, StatusRequest statusRequest) {
         Task task = taskRepository.findTaskByIdOrThrow(taskId);
         task.validateTaskNotDeleted();
         task.recordEndDate(statusRequest.getStatus());
-        task.validateOwner(loginUserId);
         task.updateStatus(statusRequest.getStatus());
         return TaskResponse.create(task);
     }
 
     //Task 삭제
     @Transactional
-    public void delete(Long taskId, Long loginUserId) {
+    public void delete(Long taskId) {
         Task task = taskRepository.findTaskByIdOrThrow(taskId);
         task.validateTaskNotDeleted();
-        task.validateOwner(loginUserId);
         taskRepository.setTrueTaskIsDeleted(taskId);
     }
 }
