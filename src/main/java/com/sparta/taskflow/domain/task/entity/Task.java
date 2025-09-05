@@ -11,12 +11,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLRestriction("is_deleted = false")
 public class Task extends BaseEntity {
 
     @Id
@@ -78,10 +80,6 @@ public class Task extends BaseEntity {
 
     public void updateStatus(TaskStatus status) {
         this.status = status;
-    }
-
-    public void updateEndDate(LocalDateTime endDate) {
-        this.endDate = endDate;
     }
 
     //Task 삭제 검증
