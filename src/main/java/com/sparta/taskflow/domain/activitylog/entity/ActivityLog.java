@@ -39,7 +39,8 @@ public class ActivityLog extends CreatedAtEntity {
         this.taskId = taskId;
     }
 
-    public static ActivityLog create(ActivityType type, String description, User user, Long taskId) {
+    public static ActivityLog create(ActivityType type, User user, Long taskId, Object... args) {
+        String description = type.getDescription(args);
         return ActivityLog.builder()
                 .activityType(type)
                 .description(description)
