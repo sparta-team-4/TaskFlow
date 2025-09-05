@@ -41,8 +41,7 @@ public class TeamCommandService {
                 .orElseThrow(() -> new EntityNotFoundException("팀을 찾을 수 없습니다."));
 
         // 변경하려는 이름이 이미 다른 팀에 의해 사용 중인지 확인
-        Optional<Team> existingTeamWithName = teamRepository.findByName(requestDto.getName());
-        if (existingTeamWithName.isPresent() && !existingTeamWithName.get().getId().equals(teamId)) {
+        if (teamRepository.existsByNameAndIdNot(requestDto.getName(), teamId)) {
             throw new IllegalArgumentException("이미 존재하는 팀 이름입니다.");
         }
 
