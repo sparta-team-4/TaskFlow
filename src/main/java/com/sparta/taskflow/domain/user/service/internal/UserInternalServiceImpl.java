@@ -15,7 +15,6 @@ public class UserInternalServiceImpl implements UserInternalService {
     private final UserRepository userRepository;
 
     @Override
-    @Transactional(readOnly = true)
     public User getByIdOrThrow(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(UserErrorCode.USER_NOT_FOUND));
