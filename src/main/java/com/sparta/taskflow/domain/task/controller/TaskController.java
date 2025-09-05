@@ -44,24 +44,21 @@ public class TaskController {
     //Task 수정
     @PatchMapping("/api/tasks/{taskId}")
     public ResponseEntity<ApiResponse<TaskResponse>> update(@PathVariable Long taskId,
-                                                            @Valid @RequestBody UpdateRequest updateRequest,
-                                                            @AuthenticationPrincipal Long loginUserId){
-        return ApiResponse.success(taskService.update(taskId, updateRequest, loginUserId), "Task가 수정되었습니다.");
+                                                            @Valid @RequestBody UpdateRequest updateRequest){
+        return ApiResponse.success(taskService.update(taskId, updateRequest), "Task가 수정되었습니다.");
     }
 
     //Task 상태 수정
     @PatchMapping("/api/tasks/{taskId}/status")
     public ResponseEntity<ApiResponse<TaskResponse>> updateStatus(@PathVariable Long taskId,
-                                                                  @Valid @RequestBody StatusRequest statusRequest,
-                                                                  @AuthenticationPrincipal Long loginUserId){
-        return ApiResponse.success(taskService.updateStatus(taskId, statusRequest, loginUserId), "작업 상태가 업데이트되었습니다.");
+                                                                  @Valid @RequestBody StatusRequest statusRequest){
+        return ApiResponse.success(taskService.updateStatus(taskId, statusRequest), "작업 상태가 업데이트되었습니다.");
     }
 
     //Task 삭제
     @DeleteMapping("/api/tasks/{taskId}")
-    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long taskId,
-                                                    @AuthenticationPrincipal Long loginUserId){
-        taskService.delete(taskId, loginUserId);
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long taskId){
+        taskService.delete(taskId);
         return ApiResponse.success(null, "Task가 삭제되었습니다.");
     }
 
