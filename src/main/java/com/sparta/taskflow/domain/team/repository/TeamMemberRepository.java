@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
     boolean existsByTeamAndUser(Team team, User user);
 
-    @Query("SELECT TeamMember.user.id from TeamMember WHERE TeamMember.team.id = :teamId")
+    @Query("SELECT tm.user FROM TeamMember tm WHERE tm.team.id = :teamId")
     List<Long> findUserIdsByTeamId(@Param("teamId") Long teamId);
 
     Optional<TeamMember> findByTeamIdAndUserId(Long teamId, Long userId);
