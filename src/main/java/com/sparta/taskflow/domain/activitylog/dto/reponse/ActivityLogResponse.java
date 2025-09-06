@@ -2,7 +2,7 @@ package com.sparta.taskflow.domain.activitylog.dto.reponse;
 
 import com.sparta.taskflow.domain.activitylog.entity.ActivityLog;
 import com.sparta.taskflow.domain.activitylog.enums.ActivityType;
-import com.sparta.taskflow.domain.auth.dto.response.UserRegisterResponse;
+import com.sparta.taskflow.domain.user.dto.response.UserDetailsResponse;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
@@ -13,13 +13,13 @@ public record ActivityLogResponse(
         Long id,
         ActivityType type,
         Long userId,
-        UserRegisterResponse user,
+        UserDetailsResponse user,
         Long taskId,
         LocalDateTime timestamp,
         String description
     ) {
     public static ActivityLogResponse from(ActivityLog activityLog) {
-        UserRegisterResponse userRegisterResponse = UserRegisterResponse.from(activityLog.getUser());
+        UserDetailsResponse userRegisterResponse = UserDetailsResponse.from(activityLog.getUser());
 
         return ActivityLogResponse.builder()
                 .id(activityLog.getId())
