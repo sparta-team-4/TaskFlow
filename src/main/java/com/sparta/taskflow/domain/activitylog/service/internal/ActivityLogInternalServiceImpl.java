@@ -1,5 +1,6 @@
 package com.sparta.taskflow.domain.activitylog.service.internal;
 
+import com.sparta.taskflow.domain.activitylog.dto.reponse.ActivityLogResponse;
 import com.sparta.taskflow.domain.activitylog.entity.ActivityLog;
 import com.sparta.taskflow.domain.activitylog.enums.ActivityType;
 import com.sparta.taskflow.domain.activitylog.exception.ActivityLogErrorCode;
