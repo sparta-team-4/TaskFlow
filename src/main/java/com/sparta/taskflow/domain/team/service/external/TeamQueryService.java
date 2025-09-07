@@ -2,6 +2,8 @@ package com.sparta.taskflow.domain.team.service.external;
 
 import com.sparta.taskflow.domain.team.dto.TeamResponseDto;
 import com.sparta.taskflow.domain.team.entity.Team;
+import com.sparta.taskflow.domain.team.exception.TeamErrorCode;
+import com.sparta.taskflow.domain.team.exception.TeamNotFoundException;
 import com.sparta.taskflow.domain.team.repository.TeamRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +27,7 @@ public class TeamQueryService {
      */
     public TeamResponseDto.Get getTeam(Long teamId) {
         Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new EntityNotFoundException("팀을 찾을 수 없습니다"));
+                .orElseThrow(() -> new TeamNotFoundException(TeamErrorCode.TEAM_NOT_FOUND));
 
         return TeamResponseDto.Get.from(team);
     }
