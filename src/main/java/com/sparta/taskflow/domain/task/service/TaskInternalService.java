@@ -1,6 +1,7 @@
 package com.sparta.taskflow.domain.task.service;
 
 import com.sparta.taskflow.domain.task.entity.Task;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
