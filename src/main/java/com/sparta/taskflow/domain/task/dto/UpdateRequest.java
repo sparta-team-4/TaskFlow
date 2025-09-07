@@ -3,8 +3,6 @@ package com.sparta.taskflow.domain.task.dto;
 import com.sparta.taskflow.domain.task.enums.TaskPriority;
 import com.sparta.taskflow.domain.task.enums.TaskStatus;
 import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import java.time.LocalDateTime;
