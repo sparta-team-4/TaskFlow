@@ -9,15 +9,18 @@ import com.sparta.taskflow.domain.comment.repository.CommentRepository;
 import com.sparta.taskflow.domain.task.entity.Task;
 import com.sparta.taskflow.domain.task.service.TaskInternalService;
 import com.sparta.taskflow.domain.user.entity.User;
-import com.sparta.taskflow.domain.user.service.UserInternalService;
+import com.sparta.taskflow.domain.user.service.internal.UserInternalService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
@@ -25,6 +28,7 @@ import static com.sparta.taskflow.domain.comment.exception.CommentErrorCode.OWNE
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class CommentServiceTest {
 
     @Mock
@@ -43,17 +47,14 @@ class CommentServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
 
         user = User.builder()
-                .id(1L)
                 .username("testUser")
                 .name("홍길동")
                 .email("test@test.com")
                 .build();
 
         task = Task.builder()
-                .id(1L)
                 .title("테스트 태스크")
                 .build();
 
@@ -63,8 +64,7 @@ class CommentServiceTest {
                 .content("첫 댓글")
                 .build();
 
-        // 리플렉션으로 ID 강제 세팅 (테스트용)
-        TestUtils.setField(comment, "id", 1L);
+        ReflectionTestUtils.setField(comment, "id", 1L);
     }
 
     @Test
@@ -105,7 +105,7 @@ class CommentServiceTest {
 
     @Nested
     @DisplayName("댓글 수정")
-    class DeleteCommentTest {
+    class UpdateCommentTest {
         @Test
         @DisplayName("댓글 수정 성공")
         void update_success() {
