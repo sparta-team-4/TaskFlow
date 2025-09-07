@@ -5,6 +5,7 @@ import com.sparta.taskflow.domain.user.dto.response.UserDetailsResponse;
 import com.sparta.taskflow.domain.user.entity.User;
 import com.sparta.taskflow.domain.user.repository.UserRepository;
 import com.sparta.taskflow.domain.user.service.external.UserQueryService;
+
 import com.sparta.taskflow.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
