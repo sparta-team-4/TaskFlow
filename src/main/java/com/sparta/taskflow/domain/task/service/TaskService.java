@@ -63,7 +63,7 @@ public class TaskService {
     //Task 수정
     @Loggable
     @Transactional
-    public TaskResponse update(Long taskId, UpdateRequest updateRequest) {
+    public TaskResponse update(Long taskId, UpdateRequest updateRequest, Long loginUserId) {
         Task task = taskRepository.findTaskByIdOrThrow(taskId);
         task.validateTaskNotDeleted();
         User assignee = userInternalService.getByIdOrThrow(updateRequest.getAssigneeId());
@@ -83,7 +83,7 @@ public class TaskService {
     //Task 상태 수정
     @Loggable
     @Transactional
-    public TaskResponse updateStatus(Long taskId, StatusRequest statusRequest) {
+    public TaskResponse updateStatus(Long taskId, StatusRequest statusRequest, Long loginUserId) {
         Task task = taskRepository.findTaskByIdOrThrow(taskId);
         task.validateTaskNotDeleted();
         task.recordEndDate(statusRequest.getStatus());
@@ -102,7 +102,7 @@ public class TaskService {
     //Task 삭제
     @Loggable
     @Transactional
-    public void delete(Long taskId) {
+    public void delete(Long taskId, Long loginUserId) {
         Task task = taskRepository.findTaskByIdOrThrow(taskId);
         task.validateTaskNotDeleted();
         taskRepository.setTrueTaskIsDeleted(taskId);
