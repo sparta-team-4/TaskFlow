@@ -23,4 +23,9 @@ public class TeamMember extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    public TeamMember(Team team, User user) {
+        this.team = team;
+        this.user = user;
+    }
 }

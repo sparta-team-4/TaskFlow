@@ -8,7 +8,7 @@ import com.sparta.taskflow.domain.task.entity.Task;
 import com.sparta.taskflow.domain.task.enums.TaskStatus;
 import com.sparta.taskflow.domain.task.repository.TaskRepository;
 import com.sparta.taskflow.domain.user.entity.User;
-import com.sparta.taskflow.domain.user.service.UserInternalService;
+import com.sparta.taskflow.domain.user.service.internal.UserInternalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -63,12 +63,11 @@ public class TaskService {
     //Task 수정
     @Loggable
     @Transactional
-    public TaskResponse update(Long taskId, UpdateRequest updateRequest, Long loginUserId) {
+    public TaskResponse update(Long taskId, UpdateRequest updateRequest) {
         Task task = taskRepository.findTaskByIdOrThrow(taskId);
         task.validateTaskNotDeleted();
         User assignee = userInternalService.getByIdOrThrow(updateRequest.getAssigneeId());
         task.recordEndDate(updateRequest.getStatus());
-        task.validateOwner(loginUserId);
         task.update(updateRequest.getTitle(),
                 updateRequest.getDescription(),
                 updateRequest.getPriority(),
@@ -84,12 +83,11 @@ public class TaskService {
     //Task 상태 수정
     @Loggable
     @Transactional
-    public TaskResponse updateStatus(Long taskId, StatusRequest statusRequest, Long loginUserId) {
-
+    public TaskResponse updateStatus(Long taskId, StatusRequest statusRequest) {
         Task task = taskRepository.findTaskByIdOrThrow(taskId);
         task.validateTaskNotDeleted();
         task.recordEndDate(statusRequest.getStatus());
-        task.validateOwner(loginUserId);
+        task.updateStatus(statusRequest.getStatus());
 
         TaskStatus ordStatus = task.getStatus();
         TaskStatus newStatus = statusRequest.getStatus();
@@ -104,10 +102,9 @@ public class TaskService {
     //Task 삭제
     @Loggable
     @Transactional
-    public void delete(Long taskId, Long loginUserId) {
+    public void delete(Long taskId) {
         Task task = taskRepository.findTaskByIdOrThrow(taskId);
         task.validateTaskNotDeleted();
-        task.validateOwner(loginUserId);
         taskRepository.setTrueTaskIsDeleted(taskId);
 
         activityLogInternalServiceImpl.log(ActivityType.TASK_DELETED, loginUserId, taskId);

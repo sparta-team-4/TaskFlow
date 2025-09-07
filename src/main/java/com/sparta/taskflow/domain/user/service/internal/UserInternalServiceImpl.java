@@ -1,4 +1,4 @@
-package com.sparta.taskflow.domain.user.service;
+package com.sparta.taskflow.domain.user.service.internal;
 
 import com.sparta.taskflow.domain.user.entity.User;
 import com.sparta.taskflow.domain.user.exception.UserErrorCode;
@@ -15,6 +15,12 @@ public class UserInternalServiceImpl implements UserInternalService {
 
     @Override
     public User getByIdOrThrow(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(UserErrorCode.USER_NOT_FOUND));
+    }
+
+    @Override
+    public User getUserByIdOrThrow(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(UserErrorCode.USER_NOT_FOUND));
     }

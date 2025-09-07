@@ -48,7 +48,7 @@ public class Task extends BaseEntity {
     private LocalDateTime endDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "assignee_id", nullable = false)
     private User assignee;
 
     private Long owner;
@@ -86,13 +86,6 @@ public class Task extends BaseEntity {
     public void validateTaskNotDeleted() {
         if (isDeleted()) {
             throw new CustomException(TaskErrorCode.DELETED_TASK);
-        }
-    }
-
-    // Task 작성자인지 검증
-    public void validateOwner(Long userId) {
-        if (!owner.equals(userId)) {
-            throw new CustomException(TaskErrorCode.OWNER_MISMATCH);
         }
     }
 

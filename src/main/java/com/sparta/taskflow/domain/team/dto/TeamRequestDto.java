@@ -29,4 +29,11 @@ public class TeamRequestDto {
         private String name;
         private String description;
     }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AddMember {
+        private Long userId;
+    }
 }
