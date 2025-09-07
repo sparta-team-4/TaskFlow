@@ -30,6 +30,7 @@ public class TaskService {
                 .assignee(assignee)
                 .endDate(null)
                 .owner(loginUserId)
+                .isDeleted(false)
                 .build();
         Task task = taskRepository.save(data);
         return TaskResponse.create(task);

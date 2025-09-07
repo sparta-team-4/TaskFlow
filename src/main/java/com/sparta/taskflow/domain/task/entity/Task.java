@@ -56,7 +56,8 @@ public class Task extends BaseEntity {
     @Builder
     public Task(String title, String description,
                 TaskPriority priority, LocalDateTime dueDate,
-                User assignee, LocalDateTime endDate, Long owner) {
+                User assignee, LocalDateTime endDate,
+                Long owner, boolean isDeleted) {
         this.title = title;
         this.description = description;
         this.priority = priority;
@@ -65,6 +66,7 @@ public class Task extends BaseEntity {
         this.assignee = assignee;
         this.endDate = endDate;
         this.owner = owner;
+        this.isDeleted = isDeleted;
     }
 
     public void update(String title, String description,
