@@ -18,12 +18,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/tasks")
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentExternalService commentService;
 
     //Task의 댓글 목록 조회
-    @GetMapping("/api/tasks/{taskId}/comments")
+    @GetMapping("/{taskId}/comments")
     public ResponseEntity<ApiPageResponse<CommentResponse>> getAllComment(@PathVariable Long taskId,
                                                                           @RequestParam(defaultValue = "0") int page,
                                                                           @RequestParam(defaultValue = "10") int size,
@@ -38,7 +39,7 @@ public class CommentController {
     }
 
     //댓글 & 대댓글 생성
-    @PostMapping("/api/tasks/{taskId}/comments")
+    @PostMapping("/{taskId}/comments")
     public ResponseEntity<ApiResponse<CommentResponse>> createComment(@AuthenticationPrincipal Long loginUserId,
                                                                       @PathVariable Long taskId,
                                                                       @Valid @RequestBody CommentRequest commentRequest){
@@ -46,7 +47,7 @@ public class CommentController {
     }
 
     //댓글 수정
-    @PatchMapping("/api/tasks/{taskId}/comments/{commentId}")
+    @PatchMapping("/{taskId}/comments/{commentId}")
     public ResponseEntity<ApiResponse<CommentResponse>> update(@AuthenticationPrincipal Long loginUserId,
                                                                @PathVariable Long taskId,
                                                                @PathVariable Long commentId,
@@ -55,7 +56,7 @@ public class CommentController {
     }
 
     //댓글 삭제
-    @DeleteMapping("/api/tasks/{taskId}/comments/{commentId}")
+    @DeleteMapping("/{taskId}/comments/{commentId}")
     public ResponseEntity<ApiResponse<Void>> delete(@AuthenticationPrincipal Long loginUserId,
                                                     @PathVariable Long taskId,
                                                     @PathVariable Long commentId){

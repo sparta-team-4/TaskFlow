@@ -2,7 +2,7 @@ package com.sparta.taskflow.domain.comment.repository;
 
 import com.sparta.taskflow.domain.comment.entity.Comment;
 import com.sparta.taskflow.domain.comment.exception.CommentErrorCode;
-import com.sparta.taskflow.domain.comment.exception.CustomException;
+import com.sparta.taskflow.domain.comment.exception.CommentException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -13,7 +13,7 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     default Comment findByIdOrThrow(long commentId) {
         return findById(commentId).orElseThrow(
-                () -> new CustomException(CommentErrorCode.COMMENT_NOT_FOUND)
+                () -> new CommentException(CommentErrorCode.COMMENT_NOT_FOUND)
         );
     }
     @EntityGraph(attributePaths = {"childComments"})
