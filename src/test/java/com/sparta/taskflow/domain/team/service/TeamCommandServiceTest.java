@@ -53,7 +53,8 @@ class TeamCommandServiceTest {
         void createTeam_success() {
             // given
             TeamRequestDto.Create request = new TeamRequestDto.Create("Test Team", "Desc");
-            Team team = TestUtils.createEntity(Team.class, Map.of("id", 1L, "name", "Test Team", "description", "Desc", "createdAt", LocalDateTime.now()));
+            LocalDateTime fixedTime = LocalDateTime.of(2025, 9, 7, 11, 0, 0);
+            Team team = TestUtils.createEntity(Team.class, Map.of("id", 1L, "name", "Test Team", "description", "Desc", "createdAt", fixedTime));
 
             given(teamRepository.existsByName(anyString())).willReturn(false);
             given(teamRepository.save(any(Team.class))).willReturn(team);
@@ -62,7 +63,7 @@ class TeamCommandServiceTest {
             TeamResponseDto.Create response = teamCommandService.createTeam(request);
 
             // then
-            assertThat(response).extracting("id", "name", "description").contains(1L, "Test Team", "Desc");
+            assertThat(response).extracting("id", "name", "description", "createdAt").contains(1L, "Test Team", "Desc", fixedTime);
             verify(teamRepository, times(1)).existsByName(anyString());
             verify(teamRepository, times(1)).save(any(Team.class));
         }
