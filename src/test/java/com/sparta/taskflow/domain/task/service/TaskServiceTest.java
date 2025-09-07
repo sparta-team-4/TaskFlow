@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -68,6 +69,8 @@ public class TaskServiceTest {
                 .assignee(user)
                 .isDeleted(false)
                 .build();
+
+        ReflectionTestUtils.setField(task, "id", 1L);
     }
 
     @Nested
