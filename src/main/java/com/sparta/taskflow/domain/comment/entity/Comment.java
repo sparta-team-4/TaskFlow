@@ -2,7 +2,7 @@ package com.sparta.taskflow.domain.comment.entity;
 
 import com.sparta.taskflow.common.entity.BaseEntity;
 import com.sparta.taskflow.domain.comment.exception.CommentErrorCode;
-import com.sparta.taskflow.domain.comment.exception.CustomException;
+import com.sparta.taskflow.domain.comment.exception.CommentException;
 import com.sparta.taskflow.domain.task.entity.Task;
 import com.sparta.taskflow.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -56,7 +56,7 @@ public class Comment extends BaseEntity {
     //Comment 작성자인지 검증
     public void validateOwner(Long loginUserId) {
         if (!(user.getId()).equals(loginUserId)) {
-            throw new CustomException(CommentErrorCode.OWNER_MISMATCH);
+            throw new CommentException(CommentErrorCode.OWNER_MISMATCH);
         }
     }
 }
