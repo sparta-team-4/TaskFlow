@@ -13,7 +13,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface TaskRepository extends JpaRepository<Task, Long> {
+public interface TaskRepository extends JpaRepository<Task, Long>, TaskQueryRepository {
     default Task findTaskByIdOrThrow(Long postId) {
         return findById(postId).orElseThrow(
                 () -> new CustomException(TaskErrorCode.TASK_NOT_FOUND)
