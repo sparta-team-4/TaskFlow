@@ -8,7 +8,7 @@ import com.sparta.taskflow.domain.comment.repository.CommentRepository;
 import com.sparta.taskflow.domain.task.entity.Task;
 import com.sparta.taskflow.domain.task.service.TaskInternalService;
 import com.sparta.taskflow.domain.user.entity.User;
-import com.sparta.taskflow.domain.user.service.UserInternalService;
+import com.sparta.taskflow.domain.user.service.internal.UserInternalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
