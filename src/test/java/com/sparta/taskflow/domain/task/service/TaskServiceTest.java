@@ -1,5 +1,7 @@
 package com.sparta.taskflow.domain.task.service;
 
+import com.sparta.taskflow.domain.comment.exception.CommentErrorCode;
+import com.sparta.taskflow.domain.comment.exception.CommentException;
 import com.sparta.taskflow.domain.task.dto.StatusRequest;
 import com.sparta.taskflow.domain.task.dto.TaskRequest;
 import com.sparta.taskflow.domain.task.dto.TaskResponse;
@@ -204,7 +206,8 @@ public class TaskServiceTest {
             Long assigneeId = 1L;
             Long taskId = 99L;
             UpdateRequest request = new UpdateRequest("title update", "desc", dueDate, HIGH, DONE, assigneeId);
-            given(taskRepository.findById(taskId)).willReturn(Optional.empty());
+            given(taskRepository.findTaskByIdOrThrow(taskId))
+                    .willThrow(new CustomException(TaskErrorCode.TASK_NOT_FOUND));
 
             // when & then
             assertThatThrownBy(() -> taskService.update(taskId, request))
@@ -292,7 +295,8 @@ public class TaskServiceTest {
         void deleteTask_fail_whenTaskNotFound() {
             // given
             Long taskId = 99L;
-            given(taskRepository.findById(taskId)).willReturn(Optional.empty());
+            given(taskRepository.findTaskByIdOrThrow(taskId))
+                    .willThrow(new CustomException(TaskErrorCode.TASK_NOT_FOUND));
 
             // when & then
             assertThatThrownBy(() -> taskService.delete(taskId))
