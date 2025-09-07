@@ -5,6 +5,7 @@ import com.sparta.taskflow.domain.task.dto.TaskRequest;
 import com.sparta.taskflow.domain.task.dto.TaskResponse;
 import com.sparta.taskflow.domain.task.dto.UpdateRequest;
 import com.sparta.taskflow.domain.task.entity.Task;
+import com.sparta.taskflow.domain.task.enums.TaskPriority;
 import com.sparta.taskflow.domain.task.exception.CustomException;
 import com.sparta.taskflow.domain.task.exception.TaskErrorCode;
 import com.sparta.taskflow.domain.task.repository.TaskRepository;
@@ -51,11 +52,22 @@ public class TaskServiceTest {
 
     private LocalDateTime dueDate;
     private LocalDateTime date;
+    private User user;
+    private Task task;
 
     @BeforeEach
     void setUp() {
         dueDate = LocalDateTime.of(2025, 9, 7, 11, 0, 0);
         date = LocalDateTime.of(2025, 8, 7, 11, 0, 0);
+        user = TestUtils.createEntity(User.class, Map.of("id", 1L));
+        task = Task.builder()
+                .title("title")
+                .description("desc")
+                .dueDate(LocalDateTime.now())
+                .priority(TaskPriority.HIGH)
+                .assignee(user)
+                .isDeleted(false)
+                .build();
     }
 
     @Nested
@@ -67,8 +79,6 @@ public class TaskServiceTest {
             // given
             Long assigneeId = 1L;
             Pageable pageable = PageRequest.of(0, 10);
-            Task task = TestUtils.createEntity(Task.class,
-                    Map.of("id", 1L, "status", TODO, "title", "test", "assigneeId", assigneeId, "isDeleted", false));
             Page<Task> taskPage = new PageImpl<>(List.of(task));
 
             given(taskRepository.search(TODO, "test", assigneeId, pageable)).willReturn(taskPage);
@@ -90,8 +100,6 @@ public class TaskServiceTest {
         void getById_success() {
             // given
             Long taskId = 1L;
-            Task task = TestUtils.createEntity(Task.class,
-                    Map.of("id", taskId, "isDeleted", false));
             given(taskRepository.findTaskByIdOrThrow(taskId)).willReturn(task);
 
             // when
@@ -126,9 +134,6 @@ public class TaskServiceTest {
             // given
             Long assigneeId = 1L;
             TaskRequest request = new TaskRequest("title test", "desc", dueDate, HIGH, assigneeId);
-            User user = TestUtils.createEntity(User.class, Map.of("id", assigneeId));
-            Task task = TestUtils.createEntity(Task.class, Map.of("id", 1L, "title", "title test", "description", "desc","dueDate", dueDate,"priority", HIGH, "status", TODO, "assigneeId", assigneeId,"assignee", user,  "createdAt", date, "updatedAt", date));
-
             given(userInternalService.getUserByIdOrThrow(assigneeId)).willReturn(user);
             given(taskRepository.save(any(Task.class))).willReturn(task);
 
@@ -137,7 +142,7 @@ public class TaskServiceTest {
 
             // then
             assertThat(response).extracting("id", "title", "description", "dueDate", "priority", "assigneeId", "status", "assignee", "createdAt", "updatedAt").contains(1L, "title test", "desc", dueDate, HIGH, TODO, assigneeId, user, date, date);
-            verify(taskRepository, times(1)).save(any(Task.class));
+            verify(taskRepository).save(any(Task.class));
         }
 
         @Test
@@ -163,10 +168,7 @@ public class TaskServiceTest {
             // given
             Long assigneeId = 1L;
             Long taskId = 1L;
-            User user = TestUtils.createEntity(User.class, Map.of("id", assigneeId));
             UpdateRequest request = new UpdateRequest("title update", "desc", dueDate, HIGH, DONE, assigneeId);
-            Task task = spy(TestUtils.createEntity(Task.class, Map.of("id", 1L, "title", "title update", "description", "desc","dueDate", dueDate,"priority", HIGH,"status", DONE,"assigneeId", assigneeId,"assignee", user,  "createdAt", date, "updatedAt", date)));
-
             given(taskRepository.findTaskByIdOrThrow(taskId)).willReturn(task);
             given(userInternalService.getUserByIdOrThrow(assigneeId)).willReturn(user);
 
@@ -234,8 +236,6 @@ public class TaskServiceTest {
         void updateStatus_success() {
             // given
             Long taskId = 1L;
-            Task task = spy(TestUtils.createEntity(Task.class,
-                    Map.of("id", taskId, "status", TODO, "isDeleted", false)));
             StatusRequest request = new StatusRequest(DONE);
 
             given(taskRepository.findTaskByIdOrThrow(taskId)).willReturn(task);
@@ -245,8 +245,8 @@ public class TaskServiceTest {
 
             // then
             assertThat(response.getStatus()).isEqualTo(DONE);
-            verify(task, times(1)).updateStatus(DONE);
-            verify(task, times(1)).recordEndDate(DONE);
+            verify(task).updateStatus(DONE);
+            verify(task).recordEndDate(DONE);
         }
 
         @Test
@@ -275,7 +275,6 @@ public class TaskServiceTest {
         void deleteTask_success() {
             // given
             Long taskId = 1L;
-            Task task = TestUtils.createEntity(Task.class, Map.of("id", taskId));
             given(taskRepository.findTaskByIdOrThrow(taskId)).willReturn(task);
 
             // when
