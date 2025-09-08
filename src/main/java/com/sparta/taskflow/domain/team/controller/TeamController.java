@@ -1,16 +1,15 @@
 package com.sparta.taskflow.domain.team.controller;
 
-import com.sparta.taskflow.common.response.ApiPageResponse;
 import com.sparta.taskflow.common.response.ApiResponse;
 import com.sparta.taskflow.domain.team.dto.TeamRequestDto;
 import com.sparta.taskflow.domain.team.dto.TeamResponseDto;
 import com.sparta.taskflow.domain.team.service.external.TeamCommandService;
 import com.sparta.taskflow.domain.team.service.external.TeamQueryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -41,10 +40,9 @@ public class TeamController {
 
     // 팀 전체 조회
     @GetMapping
-    public ResponseEntity<ApiPageResponse<TeamResponseDto.Get>> getAllTeams(Pageable pageable) {
-
-        Page<TeamResponseDto.Get> responseDtoPage = teamQueryService.getAllTeams(pageable);
-        return ApiPageResponse.success(responseDtoPage, "팀 목록을 조회했습니다.");
+    public ResponseEntity<ApiResponse<List<TeamResponseDto.Get>>> getAllTeams() {
+        List<TeamResponseDto.Get> responseDtoList = teamQueryService.getAllTeams();
+        return ApiResponse.success(responseDtoList, "팀 목록을 조회했습니다.");
     }
 
     // 팀 수정

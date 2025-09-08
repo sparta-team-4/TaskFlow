@@ -7,10 +7,11 @@ import com.sparta.taskflow.domain.team.exception.TeamNotFoundException;
 import com.sparta.taskflow.domain.team.repository.TeamRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -32,13 +33,10 @@ public class TeamQueryService {
         return TeamResponseDto.Get.from(team);
     }
 
-    /**
-     * 모든 팀의 목록을 페이징하여 조회
-     * @param pageable 페이징 정보
-     * @return 페이징된 팀 정보 DTO
-     */
-    public Page<TeamResponseDto.Get> getAllTeams(Pageable pageable) {
-        Page<Team> teams = teamRepository.findAll(pageable);
-        return teams.map(TeamResponseDto.Get::from);
+    public List<TeamResponseDto.Get> getAllTeams() {
+        List<Team> teams = teamRepository.findAll();
+        return teams.stream()
+                .map(TeamResponseDto.Get::from)
+                .collect(Collectors.toList());
     }
 }
