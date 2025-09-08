@@ -2,9 +2,10 @@ package com.sparta.taskflow.domain.dashboard.service;
 
 import com.sparta.taskflow.domain.dashboard.dto.response.DashboardResponseDto;
 import com.sparta.taskflow.domain.dashboard.dto.response.MyTaskSummaryResponse;
-import com.sparta.taskflow.domain.dashboard.dto.response.MyTaskSummaryResponse.MyTaskSummary;
 import com.sparta.taskflow.domain.dashboard.dto.response.TaskStatisticsResponse;
+import com.sparta.taskflow.domain.task.dto.TaskResponse;
 import com.sparta.taskflow.domain.task.entity.Task;
+import com.sparta.taskflow.domain.task.enums.TaskStatus;
 import com.sparta.taskflow.domain.task.repository.TaskRepository;
 import com.sparta.taskflow.domain.task.repository.dto.TaskStatisticsProjection;
 import com.sparta.taskflow.domain.task.repository.dto.TeamProgressProjection;
@@ -49,9 +50,9 @@ public class DashboardQueryService {
     public MyTaskSummaryResponse getMyTasksSummary(Long assigneeId) {
         List<Task> tasks = taskRepository.findAllByAssigneeId(assigneeId);
 
-        List<MyTaskSummary> todayTasks = new ArrayList<>();
-        List<MyTaskSummary> upcomingTasks = new ArrayList<>();
-        List<MyTaskSummary> overdueTasks = new ArrayList<>();
+        List<TaskResponse> todayTasks = new ArrayList<>();
+        List<TaskResponse> upcomingTasks = new ArrayList<>();
+        List<TaskResponse> overdueTasks = new ArrayList<>();
 
         LocalDate today = LocalDate.now();
         LocalDateTime now = LocalDateTime.now();
@@ -59,12 +60,16 @@ public class DashboardQueryService {
         for (Task task : tasks) {
             LocalDateTime dueDate = task.getDueDate();
 
+            if (task.getStatus().equals(TaskStatus.DONE)) {
+                continue;
+            }
+
             if (dueDate.isBefore(now)) {
-                overdueTasks.add(MyTaskSummary.from(task));
+                overdueTasks.add(TaskResponse.create(task));
             } else if (dueDate.toLocalDate().isEqual(today)) {
-                todayTasks.add(MyTaskSummary.from(task));
+                todayTasks.add(TaskResponse.create(task));
             } else {
-                upcomingTasks.add(MyTaskSummary.from(task));
+                upcomingTasks.add(TaskResponse.create(task));
             }
         }
         return MyTaskSummaryResponse.of(todayTasks, upcomingTasks, overdueTasks);
