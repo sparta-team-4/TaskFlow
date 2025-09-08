@@ -45,6 +45,16 @@ public class TeamController {
         return ApiResponse.success(responseDtoList, "팀 목록을 조회했습니다.");
     }
 
+    // 팀 멤버 목록 조회
+    @GetMapping("/{teamId}/members")
+    public ResponseEntity<ApiResponse<List<TeamResponseDto.Get.MemberInfo>>> getTeamMembers(
+            @PathVariable Long teamId) {
+
+        TeamResponseDto.Get teamDto = teamQueryService.getTeam(teamId);
+
+        return ApiResponse.success(teamDto.getMembers(), "팀 멤버 목록을 조회했습니다.");
+    }
+
     // 팀 수정
     @PutMapping("/{teamId}")
     public ResponseEntity<ApiResponse<TeamResponseDto.Get>> updateTeam(
@@ -74,11 +84,11 @@ public class TeamController {
 
     // 팀 멤버 삭제
     @DeleteMapping("/{teamId}/members/{userId}")
-    public ResponseEntity<ApiResponse<Void>> deleteTeamMember(
+    public ResponseEntity<ApiResponse<TeamResponseDto.Get>> deleteTeamMember(
             @PathVariable Long teamId,
             @PathVariable Long userId) {
 
-        teamCommandService.deleteMember(teamId, userId);
-        return ApiResponse.success(null, "멤버가 성공적으로 제거되었습니다.");
+        TeamResponseDto.Get responseDto = teamCommandService.deleteMember(teamId, userId);
+        return ApiResponse.success(responseDto, "멤버가 성공적으로 제거되었습니다.");
     }
 }
