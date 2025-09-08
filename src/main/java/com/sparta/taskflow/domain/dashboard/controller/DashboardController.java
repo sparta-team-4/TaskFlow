@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/dashboard")
@@ -36,8 +36,8 @@ public class DashboardController {
     }
 
     @GetMapping("/team-progress")
-    public ResponseEntity<ApiResponse<DashboardResponseDto>> getTeamProgress() {
+    public ResponseEntity<ApiResponse<Map<String, Integer>>> getTeamProgress() {
         DashboardResponseDto responseDto = dashboardQueryService.getTeamProgress();
-        return ApiResponse.success(responseDto, "팀 진행률 조회 완료");
+        return ApiResponse.success(responseDto.getTeamProgress(), "팀 진행률 조회 완료");
     }
 }
