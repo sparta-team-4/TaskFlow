@@ -2,6 +2,7 @@ package com.sparta.taskflow.domain.task.service;
 
 import com.sparta.taskflow.domain.task.entity.Task;
 import com.sparta.taskflow.domain.task.repository.TaskRepository;
+import com.sparta.taskflow.domain.task.repository.dto.TeamProgressProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,5 +24,10 @@ public class TaskInternalServiceImpl implements TaskInternalService {
     //유저 id로 task 조회
     public List<Task> getAllById(Long assigneeId){
         return taskRepository.findAllByAssigneeId(assigneeId);
+    }
+
+    @Override
+    public List<TeamProgressProjection> findTeamProgress() { // ❗️추가
+        return taskRepository.findTeamProgress();
     }
 }

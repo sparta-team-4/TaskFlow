@@ -4,6 +4,7 @@ import com.sparta.taskflow.domain.task.entity.Task;
 import com.sparta.taskflow.domain.task.enums.TaskStatus;
 import com.sparta.taskflow.domain.task.exception.TaskErrorCode;
 import com.sparta.taskflow.domain.task.exception.CustomException;
+import com.sparta.taskflow.domain.task.repository.dto.TeamProgressProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -44,4 +45,16 @@ public interface TaskRepository extends JpaRepository<Task, Long>, TaskQueryRepo
     @Modifying
     @Query("UPDATE Task u SET u.isDeleted = true WHERE u.id = :id")
     void setTrueTaskIsDeleted(Long id);
+
+    @Query("""
+            SELECT new com.sparta.taskflow.domain.task.repository.dto.TeamProgressProjection(
+                tm.team.name,
+                COUNT(t.id),
+                SUM(CASE WHEN t.status = com.sparta.taskflow.domain.task.enums.TaskStatus.DONE THEN 1 ELSE 0 END)
+            )
+            FROM Task t
+            JOIN TeamMember tm ON t.assignee = tm.user
+            GROUP BY tm.team.name
+            """)
+    List<TeamProgressProjection> findTeamProgress();
 }
