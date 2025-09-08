@@ -1,5 +1,6 @@
 package com.sparta.taskflow.domain.dashboard.dto.response;
 
+import com.sparta.taskflow.domain.task.dto.TaskResponse;
 import com.sparta.taskflow.domain.task.entity.Task;
 import com.sparta.taskflow.domain.task.enums.TaskStatus;
 import lombok.Builder;
@@ -11,18 +12,18 @@ import java.util.List;
 @Getter
 public class MyTaskSummaryResponse {
 
-    private final List<MyTaskSummary> todayTasks;
-    private final List<MyTaskSummary> upcomingTasks;
-    private final List<MyTaskSummary> overdueTasks;
+    private final List<TaskResponse> todayTasks;
+    private final List<TaskResponse> upcomingTasks;
+    private final List<TaskResponse> overdueTasks;
 
     @Builder
-    private MyTaskSummaryResponse(List<MyTaskSummary> todayTasks, List<MyTaskSummary> upcomingTasks, List<MyTaskSummary> overdueTasks) {
+    private MyTaskSummaryResponse(List<TaskResponse> todayTasks, List<TaskResponse> upcomingTasks, List<TaskResponse> overdueTasks) {
         this.todayTasks = todayTasks;
         this.upcomingTasks = upcomingTasks;
         this.overdueTasks = overdueTasks;
     }
 
-    public static MyTaskSummaryResponse of(List<MyTaskSummary> todayTasks, List<MyTaskSummary> upcomingTasks, List<MyTaskSummary> overdueTasks) {
+    public static MyTaskSummaryResponse of(List<TaskResponse> todayTasks, List<TaskResponse> upcomingTasks, List<TaskResponse> overdueTasks) {
         return MyTaskSummaryResponse.builder()
                 .todayTasks(todayTasks)
                 .upcomingTasks(upcomingTasks)
