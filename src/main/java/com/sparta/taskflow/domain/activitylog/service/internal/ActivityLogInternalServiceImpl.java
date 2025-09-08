@@ -6,7 +6,7 @@ import com.sparta.taskflow.domain.activitylog.exception.ActivityLogErrorCode;
 import com.sparta.taskflow.domain.activitylog.exception.ActivityLogUnauthorizedException;
 import com.sparta.taskflow.domain.activitylog.repository.ActivityLogRepository;
 import com.sparta.taskflow.domain.user.entity.User;
-import com.sparta.taskflow.domain.user.service.UserInternalServiceImpl;
+import com.sparta.taskflow.domain.user.service.internal.UserInternalServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class ActivityLogInternalServiceImpl implements  ActivityLogInternalService {
+public class ActivityLogInternalServiceImpl implements ActivityLogInternalService {
 
     private final ActivityLogRepository activityLogRepository;
     private final UserInternalServiceImpl userInternalServiceImpl;
