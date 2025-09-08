@@ -114,16 +114,16 @@ public class TaskService {
     }
 
     @Transactional(readOnly = true)
-    public Dto.AssigneeListDto getByAssignee(Long loginUserId) {
-        List<Dto.AssigneeDto> list = new ArrayList<>();
+    public List<AssigneeDto> getByAssignee(Long loginUserId) {
+        List<AssigneeDto> list = new ArrayList<>();
         teamInternalService.findTeamIdByUserId(loginUserId)
                 .ifPresent(id -> {
                     List<Long> userIds = teamInternalService.findUserIdsByTeamId(id);
                     for (Long userId : userIds) {
                         User user = userInternalService.getByIdOrThrow(userId);
-                        list.add(Dto.AssigneeDto.create(user));
+                        list.add(AssigneeDto.create(user));
                     }
                 });
-        return Dto.AssigneeListDto.create(list);
+        return list;
     }
 }
