@@ -46,6 +46,8 @@ public interface TaskRepository extends JpaRepository<Task, Long>, TaskQueryRepo
     @Query("UPDATE Task u SET u.isDeleted = true WHERE u.id = :id")
     void setTrueTaskIsDeleted(Long id);
 
+    List<Task> findByTitleContainingIgnoreCase(String query);
+
     @Query("""
             SELECT new com.sparta.taskflow.domain.task.repository.dto.TeamProgressProjection(
                 tm.team.name,

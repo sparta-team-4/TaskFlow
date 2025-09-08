@@ -1,6 +1,5 @@
 package com.sparta.taskflow.domain.auth.service;
 
-import com.sparta.taskflow.common.logs.annotation.Loggable;
 import com.sparta.taskflow.common.utils.JwtUtils;
 import com.sparta.taskflow.domain.auth.dto.request.LoginRequest;
 import com.sparta.taskflow.domain.auth.dto.request.UserRegisterRequest;
@@ -43,7 +42,6 @@ public class AuthService {
         );
     }
 
-    @Loggable
     @Transactional
     public LoginResponse login(LoginRequest request) {
 
@@ -58,9 +56,6 @@ public class AuthService {
                 jwtUtils.createToken(user.getId(), user.getRole())
         );
     }
-
-    // @Loggable
-    // public void logout() {}
 
     @Transactional
     public void withdraw(Long userId, String rawPassword) {
