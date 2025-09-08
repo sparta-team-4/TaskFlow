@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class TaskController {
@@ -66,8 +68,8 @@ public class TaskController {
     }
 
     @GetMapping("/api/users")
-    public ResponseEntity<ApiResponse<Dto.AssigneeListDto>> getAssignee(@AuthenticationPrincipal Long loginUserId) {
-        Dto.AssigneeListDto assignee = taskService.getByAssignee(loginUserId);
+    public ResponseEntity<ApiResponse<List<AssigneeDto>>> getAssignee(@AuthenticationPrincipal Long loginUserId) {
+        List<AssigneeDto> assignee = taskService.getByAssignee(loginUserId);
         return ApiResponse.success(assignee, "요청이 성공적으로 처리되었습니다.");
     }
 
