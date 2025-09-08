@@ -43,7 +43,6 @@ public class AuthService {
         );
     }
 
-    @Loggable
     @Transactional
     public LoginResponse login(LoginRequest request) {
 
@@ -58,9 +57,6 @@ public class AuthService {
                 jwtUtils.createToken(user.getId(), user.getRole())
         );
     }
-
-    // @Loggable
-    // public void logout() {}
 
     @Transactional
     public void withdraw(Long userId, String rawPassword) {
