@@ -15,10 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
@@ -79,23 +75,26 @@ class TeamQueryServiceTest {
     @Nested
     @DisplayName("팀 목록 조회")
     class GetAllTeamsTest {
+
         @Test
-        @DisplayName("팀 목록을 페이징하여 조회한다.")
+        @DisplayName("팀 전체 목록을 성공적으로 조회한다.")
         void getAllTeams_success() {
             // given
             Team team1 = TestUtils.createEntity(Team.class, Map.of("id", 1L, "name", "Team A"));
             Team team2 = TestUtils.createEntity(Team.class, Map.of("id", 2L, "name", "Team B"));
-            Pageable pageable = PageRequest.of(0, 10);
-            Page<Team> teamPage = new PageImpl<>(List.of(team1, team2), pageable, 2);
-            given(teamRepository.findAll(pageable)).willReturn(teamPage);
+
+            List<Team> teamList = List.of(team1, team2);
+
+            given(teamRepository.findAll()).willReturn(teamList);
 
             // when
-            Page<TeamResponseDto.Get> resultPage = teamQueryService.getAllTeams(pageable);
+            List<TeamResponseDto.Get> resultList = teamQueryService.getAllTeams();
 
             // then
-            assertThat(resultPage.getTotalElements()).isEqualTo(2);
-            assertThat(resultPage.getContent()).hasSize(2);
-            assertThat(resultPage.getContent().get(0).getName()).isEqualTo("Team A");
+            assertThat(resultList).isNotNull();
+            assertThat(resultList).hasSize(2);
+            assertThat(resultList.get(0).getName()).isEqualTo("Team A");
+            assertThat(resultList.get(1).getName()).isEqualTo("Team B");
         }
     }
 }

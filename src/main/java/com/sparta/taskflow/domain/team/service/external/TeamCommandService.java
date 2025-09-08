@@ -74,8 +74,7 @@ public class TeamCommandService {
         }
 
         // 3. TeamMember 엔티티 생성 및 저장
-        TeamMember teamMember = new TeamMember(team, user);
-        teamMemberRepository.save(teamMember);
+        teamMemberRepository.save(new TeamMember(team, user));
 
         // 4. 변경사항이 적용된 Team 정보를 다시 조회하여 DTO로 반환
         Team updatedTeam = findTeamByIdOrThrow(teamId);
@@ -84,17 +83,18 @@ public class TeamCommandService {
     }
 
     // 팀 멤버 삭제
-    public void deleteMember(Long teamId, Long userId) {
-        // 1. 삭제할 팀 멤버 관계를 조회합니다.
+    public TeamResponseDto.Get deleteMember(Long teamId, Long userId) {
         TeamMember teamMember = teamMemberRepository.findByTeamIdAndUserId(teamId, userId)
                 .orElseThrow(() -> new MemberNotFoundException(TeamErrorCode.MEMBER_NOT_FOUND));
 
-        // 2. 조회된 팀 멤버 관계를 삭제합니다.
         teamMemberRepository.delete(teamMember);
+
+        Team updatedTeam = findTeamByIdOrThrow(teamId);
+        return TeamResponseDto.Get.from(updatedTeam);
     }
 
     private Team findTeamByIdOrThrow(Long teamId) {
-        return teamRepository.findById(teamId)
+        return teamRepository.findByIdWithMembers(teamId)
                 .orElseThrow(() -> new TeamNotFoundException(TeamErrorCode.TEAM_NOT_FOUND));
     }
 }

@@ -1,6 +1,7 @@
 package com.sparta.taskflow.domain.dashboard.controller;
 
 import com.sparta.taskflow.common.response.ApiResponse;
+import com.sparta.taskflow.domain.dashboard.dto.response.DashboardResponseDto;
 import com.sparta.taskflow.domain.dashboard.dto.response.MyTaskSummaryResponse;
 import com.sparta.taskflow.domain.dashboard.dto.response.TaskStatisticsResponse;
 import com.sparta.taskflow.domain.dashboard.service.DashboardQueryService;
@@ -32,5 +33,11 @@ public class DashboardController {
                 dashboardQueryService.getMyTasksSummary(userId),
                 "내 작업 요약 조회 완료"
         );
+    }
+
+    @GetMapping("/team-progress")
+    public ResponseEntity<ApiResponse<DashboardResponseDto>> getTeamProgress() {
+        DashboardResponseDto responseDto = dashboardQueryService.getTeamProgress();
+        return ApiResponse.success(responseDto, "팀 진행률 조회 완료");
     }
 }

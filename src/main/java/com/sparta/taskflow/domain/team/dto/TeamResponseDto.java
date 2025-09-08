@@ -2,6 +2,7 @@ package com.sparta.taskflow.domain.team.dto;
 
 import com.sparta.taskflow.common.enums.Role;
 import com.sparta.taskflow.domain.team.entity.Team;
+import com.sparta.taskflow.domain.team.entity.TeamMember;
 import com.sparta.taskflow.domain.user.entity.User;
 import lombok.Getter;
 
@@ -56,8 +57,22 @@ public class TeamResponseDto {
                     .collect(Collectors.toList());
         }
 
+        private Get(Team team, List<TeamMember> members) {
+            this.id = team.getId();
+            this.name = team.getName();
+            this.description = team.getDescription();
+            this.createdAt = team.getCreatedAt();
+            this.members = members.stream() // 외부에서 받은 member 리스트 사용
+                    .map(teamMember -> MemberInfo.from(teamMember.getUser()))
+                    .collect(Collectors.toList());
+        }
+
         public static Get from(Team team) {
             return new Get(team);
+        }
+
+        public static Get from(Team team, List<TeamMember> members) {
+            return new Get(team, members);
         }
 
         // 팀 멤버 한 명의 정보를 담는 중첩 DTO

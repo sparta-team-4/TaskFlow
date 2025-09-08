@@ -1,6 +1,5 @@
 package com.sparta.taskflow.domain.auth.service;
 
-import com.sparta.taskflow.common.logs.annotation.Loggable;
 import com.sparta.taskflow.common.utils.JwtUtils;
 import com.sparta.taskflow.domain.auth.dto.request.LoginRequest;
 import com.sparta.taskflow.domain.auth.dto.request.UserRegisterRequest;

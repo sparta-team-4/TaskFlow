@@ -1,16 +1,15 @@
 package com.sparta.taskflow.domain.team.controller;
 
-import com.sparta.taskflow.common.response.ApiPageResponse;
 import com.sparta.taskflow.common.response.ApiResponse;
 import com.sparta.taskflow.domain.team.dto.TeamRequestDto;
 import com.sparta.taskflow.domain.team.dto.TeamResponseDto;
 import com.sparta.taskflow.domain.team.service.external.TeamCommandService;
 import com.sparta.taskflow.domain.team.service.external.TeamQueryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -41,10 +40,19 @@ public class TeamController {
 
     // 팀 전체 조회
     @GetMapping
-    public ResponseEntity<ApiPageResponse<TeamResponseDto.Get>> getAllTeams(Pageable pageable) {
+    public ResponseEntity<ApiResponse<List<TeamResponseDto.Get>>> getAllTeams() {
+        List<TeamResponseDto.Get> responseDtoList = teamQueryService.getAllTeams();
+        return ApiResponse.success(responseDtoList, "팀 목록을 조회했습니다.");
+    }
 
-        Page<TeamResponseDto.Get> responseDtoPage = teamQueryService.getAllTeams(pageable);
-        return ApiPageResponse.success(responseDtoPage, "팀 목록을 조회했습니다.");
+    // 팀 멤버 목록 조회
+    @GetMapping("/{teamId}/members")
+    public ResponseEntity<ApiResponse<List<TeamResponseDto.Get.MemberInfo>>> getTeamMembers(
+            @PathVariable Long teamId) {
+
+        TeamResponseDto.Get teamDto = teamQueryService.getTeam(teamId);
+
+        return ApiResponse.success(teamDto.getMembers(), "팀 멤버 목록을 조회했습니다.");
     }
 
     // 팀 수정
@@ -76,11 +84,11 @@ public class TeamController {
 
     // 팀 멤버 삭제
     @DeleteMapping("/{teamId}/members/{userId}")
-    public ResponseEntity<ApiResponse<Void>> deleteTeamMember(
+    public ResponseEntity<ApiResponse<TeamResponseDto.Get>> deleteTeamMember(
             @PathVariable Long teamId,
             @PathVariable Long userId) {
 
-        teamCommandService.deleteMember(teamId, userId);
-        return ApiResponse.success(null, "멤버가 성공적으로 제거되었습니다.");
+        TeamResponseDto.Get responseDto = teamCommandService.deleteMember(teamId, userId);
+        return ApiResponse.success(responseDto, "멤버가 성공적으로 제거되었습니다.");
     }
 }

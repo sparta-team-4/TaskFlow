@@ -3,6 +3,7 @@ package com.sparta.taskflow.domain.task.service;
 import com.sparta.taskflow.domain.task.dto.TaskResponse;
 import com.sparta.taskflow.domain.task.entity.Task;
 import com.sparta.taskflow.domain.task.repository.TaskRepository;
+import com.sparta.taskflow.domain.task.repository.dto.TeamProgressProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,5 +33,10 @@ public class TaskInternalServiceImpl implements TaskInternalService {
         return taskRepository.findByTitleContainingIgnoreCase(query).stream()
                 .map(TaskResponse::create)
                 .toList();
+    }
+
+    @Override
+    public List<TeamProgressProjection> findTeamProgress() { // ❗️추가
+        return taskRepository.findTeamProgress();
     }
 }

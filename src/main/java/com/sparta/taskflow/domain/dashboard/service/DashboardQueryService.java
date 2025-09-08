@@ -1,11 +1,13 @@
 package com.sparta.taskflow.domain.dashboard.service;
 
+import com.sparta.taskflow.domain.dashboard.dto.response.DashboardResponseDto;
 import com.sparta.taskflow.domain.dashboard.dto.response.MyTaskSummaryResponse;
 import com.sparta.taskflow.domain.dashboard.dto.response.MyTaskSummaryResponse.MyTaskSummary;
 import com.sparta.taskflow.domain.dashboard.dto.response.TaskStatisticsResponse;
 import com.sparta.taskflow.domain.task.entity.Task;
 import com.sparta.taskflow.domain.task.repository.TaskRepository;
 import com.sparta.taskflow.domain.task.repository.dto.TaskStatisticsProjection;
+import com.sparta.taskflow.domain.task.repository.dto.TeamProgressProjection;
 import com.sparta.taskflow.domain.task.service.TaskInternalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,6 +72,11 @@ public class DashboardQueryService {
 
     private double getProgress(int totalTasks, int completedTasks) {
         return totalTasks == ZERO_PERCENT ? ZERO_PERCENT : ((double) completedTasks / totalTasks) * PERCENTAGE;
+    }
+
+    public DashboardResponseDto getTeamProgress() {
+        List<TeamProgressProjection> projections = taskInternalService.findTeamProgress();
+        return DashboardResponseDto.from(projections);
     }
 
 }
