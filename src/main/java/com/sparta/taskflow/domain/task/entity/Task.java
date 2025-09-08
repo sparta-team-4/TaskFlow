@@ -78,10 +78,6 @@ public class Task extends BaseEntity {
         this.assignee = assignee;
     }
 
-    public void updateStatus(TaskStatus status) {
-        this.status = status;
-    }
-
     //Task 삭제 검증
     public void validateTaskNotDeleted() {
         if (isDeleted()) {

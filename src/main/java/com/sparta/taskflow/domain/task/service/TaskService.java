@@ -86,12 +86,11 @@ public class TaskService {
     public TaskResponse updateStatus(Long taskId, StatusRequest statusRequest, Long loginUserId) {
         Task task = taskRepository.findTaskByIdOrThrow(taskId);
         task.validateTaskNotDeleted();
-        task.recordEndDate(statusRequest.getStatus());
 
         TaskStatus ordStatus = task.getStatus();
         TaskStatus newStatus = statusRequest.getStatus();
 
-        task.updateStatus(newStatus);
+        task.recordEndDate(newStatus);
 
         activityLogInternalServiceImpl.log(ActivityType.TASK_STATUS_CHANGED, loginUserId, taskId, ordStatus, newStatus);
 
