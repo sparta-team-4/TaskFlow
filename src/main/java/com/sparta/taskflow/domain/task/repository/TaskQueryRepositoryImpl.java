@@ -1,15 +1,24 @@
 package com.sparta.taskflow.domain.task.repository;
 
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.DateTemplate;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.taskflow.domain.task.entity.QTask;
 import com.sparta.taskflow.domain.task.enums.TaskStatus;
+import com.sparta.taskflow.domain.task.repository.dto.DailyTaskProjection;
+import com.sparta.taskflow.domain.task.repository.dto.QDailyTaskProjection;
 import com.sparta.taskflow.domain.task.repository.dto.QTaskStatisticsProjection;
 import com.sparta.taskflow.domain.task.repository.dto.TaskStatisticsProjection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+
+import static com.querydsl.core.types.dsl.Expressions.dateTemplate;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -57,5 +66,38 @@ public class TaskQueryRepositoryImpl implements TaskQueryRepository {
                 .from(task)
 //                .where(task.isDeleted.isFalse())
                 .fetchOne();
+    }
+
+    @Override
+    public List<DailyTaskProjection> findWeeklyTaskSummary(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        QTask task = QTask.task;
+
+        // LocalDate로 캐스팅
+        DateTemplate<LocalDate> dueDateOnly = Expressions.dateTemplate(
+                LocalDate.class,
+                "cast({0} as LocalDate)",
+                task.dueDate
+        );
+        NumberExpression<Integer> completedSum = new CaseBuilder()
+                .when(task.status.eq(TaskStatus.DONE))
+                .then(1)
+                .otherwise(0).sum();
+
+        return jpaQueryFactory
+                .select(
+                        new QDailyTaskProjection(
+                                dueDateOnly,
+                                task.count().intValue(),
+                                completedSum
+                        )
+                )
+                .from(task)
+                .where(
+                        task.dueDate.goe(startDateTime),
+                        task.dueDate.lt(endDateTime)
+                )
+                .groupBy(dueDateOnly)
+                .orderBy(dueDateOnly.asc())
+                .fetch();
     }
 }
