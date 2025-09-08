@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -27,5 +28,11 @@ public class TeamInternalServiceImpl implements TeamInternalService {
         return teamRepository.findByNameContainingIgnoreCase(query).stream()
                 .map(TeamResponseDto.Search::from)
                 .toList();
+    }
+
+    @Override
+    public Optional<Long> findTeamIdByUserId(Long userId) {
+        return teamMemberRepository.findByUserId(userId)
+                .map(teamMember -> teamMember.getTeam().getId());
     }
 }
