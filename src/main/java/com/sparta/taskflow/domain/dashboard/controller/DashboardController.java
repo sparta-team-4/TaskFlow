@@ -4,6 +4,7 @@ import com.sparta.taskflow.common.response.ApiResponse;
 import com.sparta.taskflow.domain.dashboard.dto.response.DashboardResponseDto;
 import com.sparta.taskflow.domain.dashboard.dto.response.MyTaskSummaryResponse;
 import com.sparta.taskflow.domain.dashboard.dto.response.TaskStatisticsResponse;
+import com.sparta.taskflow.domain.dashboard.dto.response.WeeklyTrendResponse;
 import com.sparta.taskflow.domain.dashboard.service.DashboardQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,14 @@ public class DashboardController {
         return ApiResponse.success(
                 dashboardQueryService.getMyTasksSummary(userId),
                 "내 작업 요약 조회 완료"
+        );
+    }
+
+    @GetMapping("/weekly-trend")
+    public ResponseEntity<ApiResponse<List<WeeklyTrendResponse>>> getWeeklyTrend() {
+        return ApiResponse.success(
+                dashboardQueryService.getWeeklyTrend(),
+                "주간 작업 추세 조회 완료"
         );
     }
 
