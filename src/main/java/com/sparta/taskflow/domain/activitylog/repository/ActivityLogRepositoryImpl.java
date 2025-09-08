@@ -11,7 +11,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,15 +23,15 @@ public class ActivityLogRepositoryImpl implements ActivityLogRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<ActivityLog> search(ActivityType type, Long taskId, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+    public Page<ActivityLog> search(ActivityType type, Long taskId, LocalDate startDate, LocalDate endDate, Pageable pageable) {
         QActivityLog activityLog = QActivityLog.activityLog;
 
         BooleanBuilder builder = new BooleanBuilder();
 
         if (type != null) builder.and(activityLog.type.eq(type));
         if (taskId != null) builder.and(activityLog.taskId.eq(taskId));
-        if (startDate != null) builder.and(activityLog.createdAt.goe(startDate));
-        if (endDate != null) builder.and(activityLog.createdAt.loe(endDate));
+        if (startDate != null) builder.and(activityLog.createdAt.goe(startDate.atStartOfDay()));
+        if (endDate != null) builder.and(activityLog.createdAt.loe(endDate.atTime(LocalTime.MAX)));
 
         List<ActivityLog> content = jpaQueryFactory
                 .selectFrom(activityLog)
