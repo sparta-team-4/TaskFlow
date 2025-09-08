@@ -65,4 +65,10 @@ public class TaskController {
         return ApiResponse.success(null, "Task가 삭제되었습니다.");
     }
 
+    @GetMapping("/api/users")
+    public ResponseEntity<ApiResponse<Dto.AssigneeListDto>> getAssignee(@AuthenticationPrincipal Long loginUserId) {
+        Dto.AssigneeListDto assignee = taskService.getByAssignee(loginUserId);
+        return ApiResponse.success(assignee, "요청이 성공적으로 처리되었습니다.");
+    }
+
 }

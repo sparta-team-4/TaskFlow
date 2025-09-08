@@ -17,7 +17,7 @@ public class TaskResponse {
     private final TaskStatus status;
     private final LocalDateTime dueDate;
     private final Long assigneeId;
-    private final AssigneeDto assignee;
+    private final Dto.AssigneeDto assignee;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
@@ -25,7 +25,7 @@ public class TaskResponse {
     private TaskResponse(Long id, String title, String description,
                          TaskPriority priority, TaskStatus status,
                          LocalDateTime dueDate, Long assigneeId,
-                         AssigneeDto assignee, LocalDateTime createdAt,
+                         Dto.AssigneeDto assignee, LocalDateTime createdAt,
                          LocalDateTime updatedAt) {
         this.id = id;
         this.title = title;
@@ -48,7 +48,7 @@ public class TaskResponse {
                 .status(task.getStatus())
                 .dueDate(task.getDueDate())
                 .assigneeId(task.getAssignee().getId())
-                .assignee(AssigneeDto.create(task.getAssignee()))
+                .assignee(Dto.AssigneeDto.create(task.getAssignee()))
                 .createdAt(task.getCreatedAt())
                 .updatedAt(task.getUpdatedAt())
                 .build();
