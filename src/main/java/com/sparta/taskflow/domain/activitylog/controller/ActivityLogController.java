@@ -1,7 +1,6 @@
 package com.sparta.taskflow.domain.activitylog.controller;
 
 import com.sparta.taskflow.common.response.ApiPageResponse;
-import com.sparta.taskflow.common.response.ApiResponse;
 import com.sparta.taskflow.domain.activitylog.dto.reponse.ActivityLogResponse;
 import com.sparta.taskflow.domain.activitylog.dto.reponse.MyActivityResponse;
 import com.sparta.taskflow.domain.activitylog.enums.ActivityType;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/activities")
@@ -30,8 +29,8 @@ public class ActivityLogController {
     @GetMapping
     public ResponseEntity<ApiPageResponse<ActivityLogResponse>> getActivityLogs(@RequestParam(required = false) ActivityType type,
                                                                                 @RequestParam(required = false) Long taskId,
-                                                                                @RequestParam(required = false) LocalDateTime startDate,
-                                                                                @RequestParam(required = false) LocalDateTime endDate,
+                                                                                @RequestParam(required = false) LocalDate startDate,
+                                                                                @RequestParam(required = false) LocalDate endDate,
                                                                                 @RequestParam(defaultValue = "0") int page,
                                                                                 @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());

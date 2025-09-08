@@ -16,7 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -34,8 +34,8 @@ public class ActivityLogInternalServiceImpl implements ActivityLogInternalServic
 
     public Page<ActivityLog> getActivityLogs(ActivityType type,
                                              Long taskId,
-                                             LocalDateTime startDate,
-                                             LocalDateTime endDate,
+                                             LocalDate startDate,
+                                             LocalDate endDate,
                                              Pageable pageable) {
         return activityLogRepository.search(type, taskId, startDate, endDate, pageable);
     }
