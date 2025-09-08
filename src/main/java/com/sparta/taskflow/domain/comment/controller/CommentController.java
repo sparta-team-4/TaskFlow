@@ -28,7 +28,7 @@ public class CommentController {
     public ResponseEntity<ApiPageResponse<CommentResponse>> getAllComment(@PathVariable Long taskId,
                                                                           @RequestParam(defaultValue = "0") int page,
                                                                           @RequestParam(defaultValue = "10") int size,
-                                                                          @RequestParam(defaultValue = "NEWEST") CommentSort sort){
+                                                                          @RequestParam CommentSort sort){
         Sort.Direction direction = sort == CommentSort.NEWEST
                 ? Sort.Direction.DESC
                 : Sort.Direction.ASC;
