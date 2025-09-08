@@ -7,6 +7,7 @@ import com.sparta.taskflow.domain.task.dto.*;
 import com.sparta.taskflow.domain.task.entity.Task;
 import com.sparta.taskflow.domain.task.enums.TaskStatus;
 import com.sparta.taskflow.domain.task.repository.TaskRepository;
+import com.sparta.taskflow.domain.team.service.internal.TeamInternalService;
 import com.sparta.taskflow.domain.user.entity.User;
 import com.sparta.taskflow.domain.user.service.internal.UserInternalService;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +15,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class TaskService {
     private final UserInternalService userInternalService;
     private final TaskRepository taskRepository;
+    private final TeamInternalService teamInternalService;
     private final ActivityLogInternalServiceImpl activityLogInternalServiceImpl;
 
     //Task 생성
@@ -106,5 +110,19 @@ public class TaskService {
         taskRepository.setTrueTaskIsDeleted(taskId);
 
         activityLogInternalServiceImpl.log(ActivityType.TASK_DELETED, loginUserId, taskId);
+    }
+
+    @Transactional(readOnly = true)
+    public Dto.AssigneeListDto getByAssignee(Long loginUserId) {
+        List<Dto.AssigneeDto> list = new ArrayList<>();
+        teamInternalService.findTeamIdByUserId(loginUserId)
+                .ifPresent(id -> {
+                    List<Long> userIds = teamInternalService.findUserIdsByTeamId(id);
+                    for (Long userId : userIds) {
+                        User user = userInternalService.getByIdOrThrow(userId);
+                        list.add(Dto.AssigneeDto.create(user));
+                    }
+                });
+        return Dto.AssigneeListDto.create(list);
     }
 }
