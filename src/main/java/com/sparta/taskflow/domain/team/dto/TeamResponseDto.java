@@ -84,4 +84,21 @@ public class TeamResponseDto {
             }
         }
     }
+
+    @Getter
+    public static class Search {
+        private final Long id;
+        private final String name;
+        private final String description;
+
+        private Search(Team team) {
+            this.id = team.getId();
+            this.name = team.getName();
+            this.description = team.getDescription();
+        }
+
+        public static Search from(Team team) {
+            return new Search(team);
+        }
+    }
 }

@@ -44,4 +44,6 @@ public interface TaskRepository extends JpaRepository<Task, Long>, TaskQueryRepo
     @Modifying
     @Query("UPDATE Task u SET u.isDeleted = true WHERE u.id = :id")
     void setTrueTaskIsDeleted(Long id);
+
+    List<Task> findByTitleContainingIgnoreCase(String query);
 }
